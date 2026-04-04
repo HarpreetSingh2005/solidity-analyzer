@@ -1,93 +1,51 @@
-import json
-def detect(ast):
+from slither import Slither
+
+
+# Logic :
+#   critical_state_read → external_call → critical_state_write
+#   and not 
+#   any_state_read → external_call → any_state_write
+def detect_reentrancy(slither: Slither):
     findings = []
-    def contains_call(expr):
-        """Recursively check if expression contains .call/.send/.transfer"""
-        if not isinstance(expr, dict):
-            return False
-
-        # Case: MemberAccess like msg.sender.call
-        if expr.get("nodeType") == "MemberAccess":
-            if expr.get("memberName") in ["call", "send", "transfer"]:
-                return True
-
-        # Traverse deeper
-        for key in expr:
-            if contains_call(expr[key]):
-                return True
-        return False
-
-    def analyze_function(function_node):
-        statements = function_node.get("body", {}).get("statements", [])
-        if not statements:
-            return
-        external_call_index = -1
-        state_update_index = []
-
-        for i, stmt in enumerate(statements):
-
-            expr = None
-
-            # Extract expression based on statement type
-            if stmt.get("nodeType") == "ExpressionStatement":
-                expr = stmt.get("expression", {})
-
-            elif stmt.get("nodeType") == "VariableDeclarationStatement":
-                expr = stmt.get("initialValue", {})
-
-            # If no expression found → skip
-            if not expr:
+    
+    for contract in slither.contracts:
+        for function in contract.functions:
+            if function.is_constructor or function.visibility not in ["public", "external"]:
                 continue
 
-            # 🔥 Detect external call
-            if contains_call(expr):
-                if external_call_index == -1:
-                    external_call_index = i
-                    print("External call found at index", i)
+            external_call_nodes = []
+            suspicious_reads = [] # state vars read before external call
+            suspicious_writes = [] # state vars written after external call
 
-            # 🔥 Detect state update (assignment)
-            if expr.get("nodeType") == "Assignment":
-                state_update_index.append(i)
-                print("State update found at index", i)
+            for node in function.nodes:
+                # Use SlithIR to detect external calls reliably
+                is_external = any("call" in str(ir).lower() or 
+                                  "send" in str(ir).lower() or 
+                                  "transfer" in str(ir).lower() 
+                                  for ir in node.irs)
 
-        # 🚨 Vulnerability condition
-        vulnerable = False
-        for update_idx in state_update_index:
-            # Flag if an external call exists BEFORE any state update [cite: 83, 101]
-            if external_call_index != -1 and external_call_index < update_idx:
-                vulnerable = True
-                break
-        if vulnerable:
-            findings.append({
-                "vulnerability": "Reentrancy",
-                "detected": True,
-                "description": "External call occurs before state update.",
-                "prevention": "Update state before making external calls."
-            })
+                if is_external:
+                    external_call_nodes.append(node)
 
-    # Traverse AST to find functions
-    def traverse(node):
-        if isinstance(node, dict):
+                # Track state variable writes
+                if node.state_variables_written:
+                    state_update_nodes.append(node)
 
-            if node.get("nodeType") == "FunctionDefinition":
-                print("Function Found:", node.get("name"))
-                analyze_function(node)
+            print('external and state update nodes', dir(external_call_nodes[0].source_mapping), state_update_nodes)
 
-
-            for key in node:
-                traverse(node[key])
-
-        elif isinstance(node, list):
-            for item in node:
-                traverse(item)
-
-    traverse(ast)
-
-    if not findings:
-        findings.append({
-            "vulnerability": "Reentrancy",
-            "detected": False,
-            "message": "No risky pattern found."
-        })
-
+            # Classic reentrancy: external call BEFORE state update
+            for call_node in external_call_nodes:
+                for update_node in state_update_nodes:
+                    if update_node.source_mapping and call_node.source_mapping:
+                        if call_node.source_mapping.lines[0] < update_node.source_mapping.lines[0] :
+                            findings.append({
+                                "vulnerability": "Reentrancy",
+                                "contract": contract.name,
+                                "function": function.name,
+                                "line": call_node.source_mapping.lines[0] ,
+                                "severity": "High",
+                                "explanation": f"External call at line {call_node.source_mapping.lines[0] } happens before state update at line {update_node.source_mapping.lines[0] }.",
+                                "suggested_fix": f"Move state update (line {update_node.source_mapping.lines[0] }) BEFORE the external call (line {call_node.source_mapping.lines[0] }). Follow Checks-Effects-Interactions pattern.",
+                                "used_features": "function.nodes + state_variables_written + SlithIR"
+                            })
     return findings

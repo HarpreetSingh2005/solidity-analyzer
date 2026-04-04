@@ -1,0 +1,4 @@
+digraph "" {
+c38_Test[shape="box"label=< <TABLE border="0"><TR><TD align="center"><B>Test</B></TD></TR><TR><TD align="left"><I>Public Functions:</I></TD></TR><TR><TD align="left">    withdraw()</TD></TR><TR><TD align="left"><I>Public Variables:</I></TD></TR><TR><TD align="left">    balance</TD></TR><TR><TD align="left">    owner</TD></TR></TABLE> >];
+
+}
