@@ -1,0 +1,16 @@
+{
+    "contract": "Reentrancy.sol",
+    "analyzed_at": "2026-04-20T22:29:18.917350",
+    "total_issues": 1,
+    "issues": [
+        {
+            "vulnerability": "Reentrancy (CEI Violation)",
+            "contract": "Reentrancy",
+            "function": "withdraw",
+            "line": 16,
+            "severity": "High",
+            "explanation": "The external call at line 16 occurs before state variables (balances) are updated at line 19. This violates the Checks-Effects-Interactions pattern.",
+            "suggested_fix": "Reorder the operations in function 'withdraw' to update the state variables (balances) before the external call at line 16."
+        }
+    ]
+}

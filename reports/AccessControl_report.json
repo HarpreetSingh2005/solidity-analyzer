@@ -1,0 +1,16 @@
+{
+    "contract": "AccessControl.sol",
+    "analyzed_at": "2026-04-20T22:29:39.412635",
+    "total_issues": 1,
+    "issues": [
+        {
+            "vulnerability": "Missing Access Control",
+            "contract": "AccessControl",
+            "function": "changeOwner",
+            "line": 13,
+            "severity": "Critical",
+            "explanation": "The function 'changeOwner' updates the sensitive variable 'owner' but does not seem to have any access control (like onlyOwner). This allows any external actor to take control of the contract.",
+            "suggested_fix": "Add an access control modifier (e.g., 'onlyOwner') to the function 'changeOwner' at line 13."
+        }
+    ]
+}

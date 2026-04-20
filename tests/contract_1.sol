@@ -10,9 +10,9 @@ contract Vulnerable {
 
     function withdraw() public {
         uint amount = balances[msg.sender];
+        (bool success, ) = msg.sender.call{value: amount}("");
         balances[msg.sender] = 0;
 
-        (bool success, ) = msg.sender.call{value: amount}("");
         require(success);
     }
 }

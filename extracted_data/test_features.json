@@ -1,0 +1,315 @@
+{
+  "contracts": [
+    {
+      "name": "ClassicReentrancy",
+      "functions": [
+        {
+          "name": "deposit",
+          "visibility": "external",
+          "modifiers": [],
+          "nodes": [
+            {
+              "line": 7,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 8,
+              "state_vars_read": [
+                "balances"
+              ],
+              "state_vars_written": [
+                "balances"
+              ],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Binary"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "withdraw",
+          "visibility": "external",
+          "modifiers": [],
+          "nodes": [
+            {
+              "line": 11,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 12,
+              "state_vars_read": [
+                "balances"
+              ],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Assignment"
+              ]
+            },
+            {
+              "line": 14,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 14,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [
+                "msg.sender.call"
+              ],
+              "ir_operations": [
+                "LowLevelCall",
+                "Unpack"
+              ]
+            },
+            {
+              "line": 15,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": [
+                "SolidityCall"
+              ]
+            },
+            {
+              "line": 17,
+              "state_vars_read": [],
+              "state_vars_written": [
+                "balances"
+              ],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Assignment"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DecoyReentrancy",
+      "functions": [
+        {
+          "name": "withdraw",
+          "visibility": "external",
+          "modifiers": [],
+          "nodes": [
+            {
+              "line": 25,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 26,
+              "state_vars_read": [
+                "balances"
+              ],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Assignment"
+              ]
+            },
+            {
+              "line": 28,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 28,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [
+                "msg.sender.call"
+              ],
+              "ir_operations": [
+                "LowLevelCall",
+                "Unpack"
+              ]
+            },
+            {
+              "line": 29,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": [
+                "SolidityCall"
+              ]
+            },
+            {
+              "line": 32,
+              "state_vars_read": [],
+              "state_vars_written": [
+                "lastWithdrawTime"
+              ],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Assignment"
+              ]
+            },
+            {
+              "line": 35,
+              "state_vars_read": [],
+              "state_vars_written": [
+                "balances"
+              ],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Assignment"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BadAccessControl",
+      "functions": [
+        {
+          "name": "claimOwnership",
+          "visibility": "public",
+          "modifiers": [],
+          "nodes": [
+            {
+              "line": 47,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 48,
+              "state_vars_read": [],
+              "state_vars_written": [
+                "owner"
+              ],
+              "external_calls": [],
+              "ir_operations": [
+                "Assignment"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SafeBank",
+      "functions": [
+        {
+          "name": "deposit",
+          "visibility": "external",
+          "modifiers": [],
+          "nodes": [
+            {
+              "line": 55,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 56,
+              "state_vars_read": [
+                "balances"
+              ],
+              "state_vars_written": [
+                "balances"
+              ],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Binary"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "withdraw",
+          "visibility": "external",
+          "modifiers": [],
+          "nodes": [
+            {
+              "line": 59,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 60,
+              "state_vars_read": [
+                "balances"
+              ],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Assignment"
+              ]
+            },
+            {
+              "line": 62,
+              "state_vars_read": [],
+              "state_vars_written": [
+                "balances"
+              ],
+              "external_calls": [],
+              "ir_operations": [
+                "Index",
+                "Assignment"
+              ]
+            },
+            {
+              "line": 64,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": []
+            },
+            {
+              "line": 64,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [
+                "msg.sender.call"
+              ],
+              "ir_operations": [
+                "LowLevelCall",
+                "Unpack"
+              ]
+            },
+            {
+              "line": 65,
+              "state_vars_read": [],
+              "state_vars_written": [],
+              "external_calls": [],
+              "ir_operations": [
+                "SolidityCall"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

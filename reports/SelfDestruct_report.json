@@ -1,0 +1,16 @@
+{
+    "contract": "SelfDestruct.sol",
+    "analyzed_at": "2026-04-20T22:29:21.876259",
+    "total_issues": 1,
+    "issues": [
+        {
+            "vulnerability": "Unprotected Self-Destruct",
+            "contract": "SelfDestruct",
+            "function": "kill",
+            "line": 13,
+            "severity": "Critical",
+            "explanation": "The function 'kill' contains a self-destruct operation at line 13 and lacks proper access control. Any external user can call this to destroy the contract.",
+            "suggested_fix": "Restrict access to the function 'kill' using an 'onlyOwner' modifier or remove the self-destruct call."
+        }
+    ]
+}
