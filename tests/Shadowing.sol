@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
-contract Parent {
-    uint256 public value = 10;
-}
+contract ShadowedVariable {
+    uint256 public balance;     // State variable
 
-contract Shadowing is Parent {
-    // Vulnerable: shadows 'value' from Parent
-    uint256 public value = 20;
+    // This function has a parameter with the same name as the state variable
+    function setBalance(uint256 balance) public {   
+        // BUG: This only updates the local parameter, NOT the state variable
+        balance = balance + 100;   
 
-    function getValue() public view returns (uint256) {
-        return value; // which one? (Shadowing.value)
+        // Correct way would be:
+        // this.balance = balance + 100; or use a different name like _balance
     }
 }
