@@ -2,7 +2,7 @@
 """
 SESA — Solidity Explainable Static Analyzer
 ============================================
-Core orchestrator.  Slither is initialised **exactly once** here and the
+Core orchestrator. Slither is initialised **exactly once** here and the
 resulting object is passed to every detector.
 
 Finding schema:
@@ -39,13 +39,13 @@ def _build_detector_registry() -> list:
                 if name.startswith("detect_") and obj.__module__ == module_name:
                     registry.append(obj)
         except Exception as e:
-            print(f"[WARN] Could not load detector module '{module_name}': {e}")
+            print(f"[WARN] Could not load detector '{module_name}': {e}")
     return registry
 
 DETECTORS = _build_detector_registry()
 
 def run_full_analysis(contract_path: str, run_ml: bool = True) -> dict[str, Any]:
-    """Parse contract once and run all detectors."""
+    """Parse contract EXACTLY ONCE and run all static/hybrid detectors."""
     path = Path(contract_path)
     if not path.exists(): return {"error": f"File not found: {contract_path}"}
 
@@ -57,17 +57,21 @@ def run_full_analysis(contract_path: str, run_ml: bool = True) -> dict[str, Any]
 
     all_results = []
     print(f"[ANALYSIS] Running {len(DETECTORS)} static detector(s)...")
+    
+    # Static Phase
     for detector in DETECTORS:
         try:
             all_results.extend(detector(slither))
         except Exception as e:
             print(f"[WARN] Detector '{detector.__name__}' failed: {e}")
 
+    # ML Phase (Hybrid)
     if run_ml:
         try:
             from ml.ml_analyzer import analyze_with_ml
             all_results.extend(analyze_with_ml(slither))
-        except Exception: pass
+        except Exception as e: 
+            print(f"[WARN] ML Analysis failed or not configured: {e}")
 
     report = {
         "contract": path.name,

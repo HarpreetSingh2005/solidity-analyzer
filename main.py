@@ -22,7 +22,6 @@ def display_report(report):
         print("No critical issues found.")
         return
 
-    # Sort by severity
     sev_order = {"Critical": 1, "High": 2, "Medium": 3, "Low": 4}
     sorted_issues = sorted(issues, key=lambda x: (sev_order.get(x.get('severity', 'Low'), 5), x.get('line', 0)))
 
@@ -31,7 +30,7 @@ def display_report(report):
         if issue['function'] == "(state variable)":
             loc = f"{issue['contract']} (state variable) : L{issue['line']}"
             
-        print(f"[{idx}] [{issue['severity'].upper()}] {issue['vulnerability']}")
+        print(f"[{idx}] [{issue.get('severity', 'UNKNOWN').upper()}] {issue['vulnerability']}")
         print(f"    Location : {loc}")
         print(f"    Reason   : {issue['explanation']}")
         print(f"    Fix      : {issue['suggested_fix']}\n" + "-"*72)
@@ -48,6 +47,6 @@ if __name__ == "__main__":
         print(f"[ERROR] File not found: {args.contract}")
         sys.exit(1)
 
-    run_ml = args.mode == "hybrid"
+    run_ml = (args.mode == "hybrid")
     report = run_full_analysis(args.contract, run_ml=run_ml)
     display_report(report)
