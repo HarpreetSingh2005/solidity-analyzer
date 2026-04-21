@@ -11,8 +11,9 @@ from detectors.tx_origin import detect_tx_origin_phishing
 from detectors.self_destruct import detect_self_destruct
 from detectors.unchecked_external_calls import detect_unchecked_external_calls
 from detectors.shadowed_variable import detect_shadowed_variables
+from ml.ml_analyzer import analyze_with_ml
 
-def run_full_analysis(contract_path: str):
+def run_full_analysis(contract_path: str, run_ml: bool = True):
     """
     Parses the contract ONCE using Slither and runs all security detectors.
     This architecture ensures maintainability and efficiency.
@@ -36,6 +37,11 @@ def run_full_analysis(contract_path: str):
         all_results.extend(detect_self_destruct(slither))
         all_results.extend(detect_unchecked_external_calls(slither))
         all_results.extend(detect_shadowed_variables(slither))
+
+        # Run Phase 2: ML Analysis (Optional)
+        if run_ml:
+            ml_results = analyze_with_ml(slither)
+            all_results.extend(ml_results)
 
         # Prepare the report
         report = {
