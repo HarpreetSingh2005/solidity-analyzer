@@ -1,0 +1,31 @@
+contract_path,label,category,description
+dataset\business_logic\broken_rewards.sol,1,business_logic,Reward-per-share computed with integer division before multiplication — rewards flood to zero when totalStaked is large
+dataset\business_logic\vesting_bypass.sol,1,business_logic,"Vesting cliff bypass: transferring internal balance detaches it from the vesting schedule, allowing immediate withdrawal"
+dataset\business_logic\fee_rounding.sol,1,business_logic,"Fee calculation uses integer division that rounds to zero for small amounts, enabling free trades via transaction splitting"
+dataset\business_logic\governance_doublevote.sol,1,business_logic,"Governance votes counted from live token balance, not a snapshot — allows double-voting by transferring tokens between accounts"
+dataset\business_logic\escrow_griefing.sol,1,business_logic,Escrow griefed by dust ETH deposits breaking exact-balance invariant; seller can self-release after timeout without arbitration
+dataset\business_logic\dutch_auction_floor.sol,1,business_logic,Dutch auction floor price is stored but never enforced in price calculation; price decays to 0 allowing free bids
+dataset\business_logic\yield_checkpoint.sol,1,business_logic,Yield checkpoint not set on deposit — new depositors retroactively earn all yield accumulated before their entry
+dataset\business_logic\nft_reveal_frontrun.sol,1,business_logic,NFT rarity assigned using blockhash and block.timestamp — validators can selectively include reveal transactions to pick rare traits
+dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check compares raw collateral to debt instead of applying LTV threshold — allows 100% LTV borrowing
+dataset\business_logic\bridge_ordering.sol,1,business_logic,"Bridge mints wrapped tokens before proof verification — if verification reverts post-mint, tokens are irreversibly distributed"
+dataset\price_oracle\spot_price_uniswap.sol,1,price_oracle,Uses Uniswap V2 getReserves() as price oracle — fully manipulatable within a single flash-loan transaction
+dataset\price_oracle\stale_chainlink.sol,1,price_oracle,Chainlink latestRoundData() called without staleness or round-completeness checks — stale prices accepted silently
+dataset\price_oracle\self_referential.sol,1,price_oracle,Protocol uses its own reserve ratio as price oracle — trades against the same pool shift the price used for borrowing limits
+dataset\price_oracle\twap_short_window.sol,1,price_oracle,TWAP window is only 12 seconds (1 block) — a single manipulated trade fully determines the oracle price
+dataset\price_oracle\no_bounds_oracle.sol,1,price_oracle,Admin-controlled oracle accepts any price with no min/max sanity bounds — malicious admin can trigger mass liquidations or unlimited borrowing
+dataset\price_oracle\centralized_oracle.sol,1,price_oracle,"Single-admin oracle with no time-lock, multi-sig, fallback, or deviation check — compromised key enables instant price manipulation"
+dataset\price_oracle\decimal_mismatch.sol,1,price_oracle,Oracle decimals assumed to be 18 but Chainlink BTC/USD has 8 — collateral value inflated by 10^10x enabling unlimited borrowing
+dataset\price_oracle\reserve_manipulation.sol,1,price_oracle,Borrow limit derived from AMM getReserves() price — flash loan can inflate collateral token price to borrow unlimited token0
+dataset\price_oracle\average_two_oracles.sol,1,price_oracle,Averages two price oracles that both derive from the same pool — correlated feeds provide zero manipulation resistance
+dataset\price_oracle\cascading_oracle.sol,1,price_oracle,Price chain: OracleA multiplies by OracleB which reads from an AMM — single flash loan corrupts OracleB and cascades to OracleA
+dataset\flash_loan\flashloan_reentrancy.sol,1,flash_loan,Flash loan issues funds then calls external receiver without reentrancy guard — attacker withdraws during callback before repayment check
+dataset\flash_loan\governance_flashloan.sol,1,flash_loan,"Governance uses live token balance with no timelock — flash-borrowing 51% enables single-transaction proposal creation, voting, and execution"
+dataset\flash_loan\price_manipulation_flashloan.sol,1,flash_loan,Flash loan funds AMM dump to inflate collateral token price — attacker borrows more than deposited collateral is actually worth
+dataset\flash_loan\collateral_inflation.sol,1,flash_loan,LP token value calculated from live pool reserves — flash-depositing ETH inflates LP token price used for borrow limits
+dataset\flash_loan\fee_bypass_flashloan.sol,1,flash_loan,Withdrawal fee waived for same-block depositors — circular flash loan (deposit then withdraw) allows fee-free exits
+dataset\flash_loan\fake_repayment.sol,1,flash_loan,Flash loan repayment validated against contract balance that can be satisfied by depositing into the same vault — not a real repayment
+dataset\flash_loan\share_inflation.sol,1,flash_loan,"ERC-4626 vault with no virtual offset — first depositor donates large amount to inflate price, making subsequent depositors receive 0 shares"
+dataset\flash_loan\oracle_stuffing.sol,1,flash_loan,TWAP oracle updated on every trade with no rate-limiting — flash loan driven trading loop can dominate cumulative price sum
+dataset\flash_loan\crossfunc_reentrancy.sol,1,flash_loan,Reentrancy guard only protects withdraw() — cross-function reentrancy allows borrowing against uncleaned deposit balance during withdrawal callback
+dataset\flash_loan\liquidity_drain.sol,1,flash_loan,"AMM with no swap fee — attacker uses flash loan to perform repeated constant-product swaps, draining one reserve to near-zero without economic cost"

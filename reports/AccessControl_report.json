@@ -1,6 +1,6 @@
 {
     "contract": "AccessControl.sol",
-    "analyzed_at": "2026-04-20T22:29:39.412635",
+    "analyzed_at": "2026-04-21T22:48:05.399957",
     "total_issues": 1,
     "issues": [
         {
