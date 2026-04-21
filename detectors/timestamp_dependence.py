@@ -53,7 +53,7 @@ def detect_timestamp_dependence(slither: Slither) -> list[dict]:
                 if not any(kw in node_str for kw in _CONDITION_KEYWORDS):
                     continue
 
-                line = node.source_mapping.lines[0] if node.source_mapping else "Unknown"
+                line = node.source_mapping.lines[0] if node.source_mapping and node.source_mapping.lines else "Unknown"
                 seen.add(key)
                 findings.append({
                     "vulnerability" : "Timestamp Dependence",

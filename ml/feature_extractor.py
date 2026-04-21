@@ -87,3 +87,57 @@ def prepare_for_prediction(features_list):
     feature_names = get_feature_names()
     X = df[feature_names].fillna(0).values
     return X, df
+
+if __name__ == "__main__":
+    import os
+    from pathlib import Path
+    import csv
+    from slither import Slither
+
+    print("=" * 60)
+    print("  SESA — Feature Extractor")
+    print("=" * 60)
+
+    project_root = Path(__file__).parent.parent
+    labels_file = project_root / "dataset" / "labels.csv"
+    output_file = project_root / "dataset" / "features.csv"
+
+    if not labels_file.exists():
+        print(f"[ERROR] {labels_file} not found. Run scripts/create_dataset.py first.")
+        exit(1)
+
+    labels_df = pd.read_csv(labels_file)
+    all_features = []
+
+    print(f"Extracting features from {len(labels_df)} contracts...")
+    for index, row in labels_df.iterrows():
+        contract_path = project_root / row['contract_path']
+        if not contract_path.exists():
+            print(f"  [WARN] File missing: {contract_path}")
+            continue
+            
+        print(f"  [SCAN] {row['contract_path']}")
+        try:
+            # We disable color and ignore solc output for cleaner logs
+            slither_obj = Slither(str(contract_path), disable_color=True)
+            extracted = extract_features_from_slither(slither_obj)
+            
+            # Attach label and metadata to each extracted function
+            for feat in extracted:
+                feat['contract_path'] = row['contract_path']
+                feat['label'] = row['label']
+                feat['category'] = row['category']
+                feat['description'] = row['description']
+                all_features.append(feat)
+        except Exception as e:
+            print(f"  [ERROR] Failed to parse {contract_path.name}: {e}")
+
+    if all_features:
+        final_df = pd.DataFrame(all_features)
+        final_df.to_csv(output_file, index=False)
+        print("\n" + "=" * 60)
+        print(f"  Done! Extracted {len(all_features)} function-level features.")
+        print(f"  Saved to: {output_file.relative_to(project_root)}")
+        print("=" * 60)
+    else:
+        print("\n[ERROR] No features were extracted.")

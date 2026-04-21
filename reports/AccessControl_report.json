@@ -1,6 +1,7 @@
 {
     "contract": "AccessControl.sol",
-    "analyzed_at": "2026-04-21T22:48:05.399957",
+    "path": "F:\\Minor Project\\solidity-analyzer\\tests\\AccessControl.sol",
+    "analyzed_at": "2026-04-22T01:19:45.677775",
     "total_issues": 1,
     "issues": [
         {
@@ -9,8 +10,8 @@
             "function": "changeOwner",
             "line": 13,
             "severity": "Critical",
-            "explanation": "The function 'changeOwner' updates the sensitive variable 'owner' but does not seem to have any access control (like onlyOwner). This allows any external actor to take control of the contract.",
-            "suggested_fix": "Add an access control modifier (e.g., 'onlyOwner') to the function 'changeOwner' at line 13."
+            "explanation": "Function 'changeOwner' modifies a privileged variable at line 13 but lacks an access control modifier (e.g., onlyOwner). Any external caller can exploit this to seize control of the contract.",
+            "suggested_fix": "Add an 'onlyOwner', 'onlyAdmin', or equivalent modifier to restrict access to authorized users."
         }
     ]
 }

@@ -35,10 +35,11 @@ def detect_reentrancy(slither: Slither) -> list[dict]:
             
             calls = [n for n in func.nodes if any(isinstance(ir, (HighLevelCall, LowLevelCall, Send, Transfer)) for ir in n.irs)]
             for call in calls:
-                line = call.source_mapping.lines[0] if call.source_mapping else "Unknown"
+                line = call.source_mapping.lines[0] if call.source_mapping and call.source_mapping.lines else "Unknown"
                 
                 # Check for state updates after the call
-                if any(n.state_variables_written and n.source_mapping and n.source_mapping.lines[0] > line for n in func.nodes):
+                call_line_int = line if isinstance(line, int) else 0
+                if any(n.state_variables_written and n.source_mapping and n.source_mapping.lines and n.source_mapping.lines[0] > call_line_int for n in func.nodes):
                     key = (contract.name, func.name, line)
                     if key in seen:
                         continue

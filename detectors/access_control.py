@@ -41,7 +41,7 @@ def detect_access_control(slither: Slither) -> list[dict]:
             if any(v in func.all_state_variables_written() for v in p_vars):
                 # Check if function has an access control modifier
                 if not any(m.name.lower() in ("onlyowner", "onlyadmin", "onlyrole") for m in func.modifiers):
-                    line = func.source_mapping.lines[0] if func.source_mapping else "Unknown"
+                    line = func.source_mapping.lines[0] if func.source_mapping and func.source_mapping.lines else "Unknown"
                     key = (contract.name, func.name, line)
                     
                     if key in seen:

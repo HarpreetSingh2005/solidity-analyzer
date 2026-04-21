@@ -39,7 +39,7 @@ def detect_unchecked_external_calls(slither: Slither) -> list[dict]:
                     if ir.lvalue is not None:
                         continue  # return value IS captured — safe
 
-                    line = node.source_mapping.lines[0] if node.source_mapping else "Unknown"
+                    line = node.source_mapping.lines[0] if node.source_mapping and node.source_mapping.lines else "Unknown"
                     key  = (contract.name, function.name, line)
                     if key in seen:
                         continue

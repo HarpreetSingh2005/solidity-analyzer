@@ -1,16 +1,17 @@
 {
     "contract": "TxOrigin.sol",
-    "analyzed_at": "2026-04-21T22:50:11.512585",
+    "path": "F:\\Minor Project\\solidity-analyzer\\tests\\TxOrigin.sol",
+    "analyzed_at": "2026-04-22T01:20:37.048850",
     "total_issues": 1,
     "issues": [
         {
-            "vulnerability": "Vulnerable use of tx.origin",
+            "vulnerability": "Vulnerable Use of tx.origin",
             "contract": "TxOrigin",
             "function": "withdrawAll",
             "line": 13,
             "severity": "High",
-            "explanation": "The function 'withdrawAll' uses 'tx.origin' for authorization at line 13. This makes the contract vulnerable to phishing attacks where an attacker can trick a user into calling a malicious contract that then calls this function.",
-            "suggested_fix": "Replace 'tx.origin' with 'msg.sender' in function 'withdrawAll' to ensure only the immediate caller is authenticated."
+            "explanation": "Function 'withdrawAll' uses 'tx.origin' for authorization at line 13. A malicious contract can call this function on behalf of a legitimate user \u2014 'tx.origin' will still be the user's address, bypassing the check and giving the attacker full access.",
+            "suggested_fix": "Replace 'tx.origin' with 'msg.sender' in function 'withdrawAll'. 'msg.sender' always refers to the immediate caller and cannot be spoofed by an intermediate contract."
         }
     ]
 }

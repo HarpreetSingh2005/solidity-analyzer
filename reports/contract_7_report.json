@@ -1,6 +1,7 @@
 {
     "contract": "contract_7.sol",
-    "analyzed_at": "2026-04-21T22:48:57.958485",
+    "path": "F:\\Minor Project\\solidity-analyzer\\tests\\contract_7.sol",
+    "analyzed_at": "2026-04-22T01:20:06.868084",
     "total_issues": 1,
     "issues": [
         {
@@ -9,8 +10,8 @@
             "function": "withdraw",
             "line": 10,
             "severity": "High",
-            "explanation": "The external call at line 10 occurs before state variables (balances) are updated at line 13. This violates the Checks-Effects-Interactions pattern.",
-            "suggested_fix": "Reorder the operations in function 'withdraw' to update the state variables (balances) before the external call at line 10."
+            "explanation": "Function 'withdraw' makes an external call at line 10 before updating state variables. This violates the Checks-Effects-Interactions pattern and may allow an attacker to re-enter the contract.",
+            "suggested_fix": "Update all state variables before making external calls (Checks-Effects-Interactions) or add a ReentrancyGuard (e.g., nonReentrant modifier)."
         }
     ]
 }

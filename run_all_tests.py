@@ -6,25 +6,8 @@ from core.pdf_generator import generate_full_pdf_report
 
 def run_tests():
     test_dir = Path("tests")
-    python_exe = "python" # Default
-    
-    # Try to find a working python (based on user's manual success with python3.11)
-    possible_pythons = [
-        r"C:\Users\Asus\AppData\Local\Microsoft\WindowsApps\python3.11.exe",
-        "python3.11",
-        "python3",
-        "python",
-        "py"
-    ]
-    
-    for py in possible_pythons:
-        try:
-            result = subprocess.run([py, "--version"], capture_output=True, text=True)
-            if result.returncode == 0:
-                python_exe = py
-                break
-        except:
-            continue
+    import sys
+    python_exe = sys.executable
 
     print(f"Using Python: {python_exe}")
     print("="*60)
@@ -48,7 +31,7 @@ def run_tests():
                 [python_exe, "main.py", str(contract)],
                 capture_output=True,
                 text=True,
-                encoding='utf-8'
+                errors='replace'
             )
             
             # Read the findings from the JSON report

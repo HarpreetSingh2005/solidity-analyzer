@@ -51,7 +51,7 @@ def detect_shadowed_variables(slither: Slither) -> list[dict]:
                     continue
                 seen.add(key)
 
-                line = var.source_mapping.lines[0] if var.source_mapping else "Unknown"
+                line = var.source_mapping.lines[0] if var.source_mapping and var.source_mapping.lines else "Unknown"
                 findings.append({
                     "vulnerability" : "State Variable Shadowing",
                     "contract"      : contract.name,

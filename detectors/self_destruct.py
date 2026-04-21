@@ -95,9 +95,9 @@ def _selfdestruct_line(node) -> int | None:
         # Typed check
         if isinstance(ir, SolidityCall):
             if ir.function.name in _SELFDESTRUCT_NAMES:
-                return node.source_mapping.lines[0] if node.source_mapping else "Unknown"
+                return node.source_mapping.lines[0] if node.source_mapping and node.source_mapping.lines else "Unknown"
         # String fallback (covers different Slither versions)
         ir_str = str(ir).lower()
         if "selfdestruct" in ir_str or "suicide" in ir_str:
-            return node.source_mapping.lines[0] if node.source_mapping else "Unknown"
+            return node.source_mapping.lines[0] if node.source_mapping and node.source_mapping.lines else "Unknown"
     return None

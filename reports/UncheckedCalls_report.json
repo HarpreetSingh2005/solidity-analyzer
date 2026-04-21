@@ -1,6 +1,7 @@
 {
     "contract": "UncheckedCalls.sol",
-    "analyzed_at": "2026-04-21T22:50:19.884981",
+    "path": "F:\\Minor Project\\solidity-analyzer\\tests\\UncheckedCalls.sol",
+    "analyzed_at": "2026-04-22T01:20:40.538381",
     "total_issues": 0,
     "issues": []
 }

@@ -1,6 +1,7 @@
 {
     "contract": "SelfDestruct.sol",
-    "analyzed_at": "2026-04-21T22:49:39.401917",
+    "path": "F:\\Minor Project\\solidity-analyzer\\tests\\SelfDestruct.sol",
+    "analyzed_at": "2026-04-22T01:20:23.360605",
     "total_issues": 1,
     "issues": [
         {
@@ -9,8 +10,8 @@
             "function": "kill",
             "line": 13,
             "severity": "Critical",
-            "explanation": "The function 'kill' contains a self-destruct operation at line 13 and lacks proper access control. Any external user can call this to destroy the contract.",
-            "suggested_fix": "Restrict access to the function 'kill' using an 'onlyOwner' modifier or remove the self-destruct call."
+            "explanation": "Function 'kill' contains a selfdestruct call at line 13 and has no access-control guard. Any external address can call this function, permanently destroying the contract and forwarding its entire ETH balance to an arbitrary recipient.",
+            "suggested_fix": "Add an 'onlyOwner' modifier (or equivalent) to 'kill', or replace the selfdestruct pattern with a pausable/upgradeable design. If self-destruction is truly required, protect it with: require(msg.sender == owner, \"Not owner\")."
         }
     ]
 }
