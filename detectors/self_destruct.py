@@ -1,46 +1,103 @@
 # detectors/self_destruct.py
+"""
+Detector: Unprotected Self-Destruct (selfdestruct / suicide)
+SWC-106  |  Severity: Critical
+
+selfdestruct(recipient) destroys the contract and forwards its entire ETH
+balance to the recipient.  When exposed in an unprotected public/external
+function — one without an owner check or similar guard — any address can
+permanently destroy the contract and steal its funds.
+
+Detection strategy:
+  For each public/external function that lacks a recognised access-control
+  modifier, scan the SlithIR for a SolidityCall to selfdestruct/suicide, or
+  fall back to a string scan for older Slither versions.
+"""
+from __future__ import annotations
+
 from slither import Slither
 from slither.slithir.operations import SolidityCall
 
-def detect_self_destruct(slither: Slither):
+_ACCESS_MOD_KEYWORDS: tuple[str, ...] = (
+    "onlyowner", "onlyadmin", "onlyrole", "authorized",
+    "onlygovernor", "onlyoperator",
+)
+_SELFDESTRUCT_NAMES: frozenset[str] = frozenset({"selfdestruct", "suicide"})
+
+
+def detect_self_destruct(slither: Slither) -> list[dict]:
     """
-    Detects functions that allow anyone to trigger a selfdestruct operation.
+    Flags public/external functions that contain selfdestruct/suicide without
+    an access-control guard.
     """
-    findings = []
-    
+    findings: list[dict] = []
+    seen:     set[tuple] = set()
+
     for contract in slither.contracts:
+        if contract.is_interface or contract.is_library:
+            continue
+
         for function in contract.functions:
-            # Check for selfdestruct in unprotected public/external functions
-            if function.is_constructor or function.visibility not in ["public", "external"]:
+            if function.is_constructor:
+                continue
+            if function.visibility not in ("public", "external"):
                 continue
 
-            # Check for protection modifiers
-            modifier_names = [mod.name.lower() for mod in function.modifiers]
-            is_protected = any("onlyowner" in m or "onlyadmin" in m for m in modifier_names)
+            key = (contract.name, function.name)
+            if key in seen:
+                continue
 
-            if is_protected:
+            # Skip functions that already have an access-control modifier
+            mod_names = [m.name.lower() for m in function.modifiers]
+            if any(kw in m for m in mod_names for kw in _ACCESS_MOD_KEYWORDS):
                 continue
 
             for node in function.nodes:
-                for ir in node.irs:
-                    # Check for selfdestruct or suicide in various ways
-                    is_sd = False
-                    if isinstance(ir, SolidityCall) and ir.function.name in ["selfdestruct", "suicide"]:
-                        is_sd = True
-                    elif "selfdestruct" in str(ir).lower() or "suicide" in str(ir).lower():
-                        # Fallback for different Slither versions or IR representations
-                        is_sd = True
-                    
-                    if is_sd:
-                        line = node.source_mapping.lines[0] if node.source_mapping else "Unknown"
-                        findings.append({
-                            "vulnerability": "Unprotected Self-Destruct",
-                            "contract": contract.name,
-                            "function": function.name,
-                            "line": line,
-                            "severity": "Critical",
-                            "explanation": f"The function '{function.name}' contains a self-destruct operation at line {line} and lacks proper access control. Any external user can call this to destroy the contract.",
-                            "suggested_fix": f"Restrict access to the function '{function.name}' using an 'onlyOwner' modifier or remove the self-destruct call."
-                        })
-                        break # Only one report per function node
+                sd_line = _selfdestruct_line(node)
+                if sd_line is None:
+                    continue
+
+                seen.add(key)
+                findings.append({
+                    "vulnerability" : "Unprotected Self-Destruct",
+                    "contract"      : contract.name,
+                    "function"      : function.name,
+                    "line"          : sd_line,
+                    "severity"      : "Critical",
+                    "explanation"   : (
+                        f"Function '{function.name}' contains a selfdestruct call at "
+                        f"line {sd_line} and has no access-control guard. Any external "
+                        f"address can call this function, permanently destroying the "
+                        f"contract and forwarding its entire ETH balance to an arbitrary "
+                        f"recipient."
+                    ),
+                    "suggested_fix" : (
+                        f"Add an 'onlyOwner' modifier (or equivalent) to "
+                        f"'{function.name}', or replace the selfdestruct pattern with a "
+                        f"pausable/upgradeable design. If self-destruction is truly "
+                        f"required, protect it with: "
+                        f"require(msg.sender == owner, \"Not owner\")."
+                    ),
+                })
+                break  # one finding per function
+
     return findings
+
+
+# ── Helper ────────────────────────────────────────────────────────────────────
+
+def _selfdestruct_line(node) -> int | None:
+    """
+    Return the source line of a selfdestruct/suicide call in `node`, or None.
+    Tries typed IR first, then string fallback.
+    """
+    for ir in node.irs:
+        # Typed check
+        if isinstance(ir, SolidityCall):
+            if ir.function.name in _SELFDESTRUCT_NAMES:
+                return node.source_mapping.lines[0] if node.source_mapping else "Unknown"
+        # String fallback (covers different Slither versions)
+        ir_str = str(ir).lower()
+        if "selfdestruct" in ir_str or "suicide" in ir_str:
+            return node.source_mapping.lines[0] if node.source_mapping else "Unknown"
+    return None

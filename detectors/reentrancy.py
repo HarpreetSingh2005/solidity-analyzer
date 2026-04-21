@@ -1,76 +1,110 @@
 # detectors/reentrancy.py
+"""
+Detector: Reentrancy (Checks-Effects-Interactions Violation)
+SWC-107  |  Severity: High
+
+The Checks-Effects-Interactions (CEI) pattern requires that all state changes
+happen BEFORE any external call.  If an external call is made while the
+contract's state still reflects the "before" values, a malicious callee can
+re-enter the same function (or another function that reads the same state)
+before the update is committed — draining funds or corrupting state.
+
+Detection strategy:
+  For each public/external function, scan for an external call node followed
+  by a state-variable write node that touches a variable already READ before
+  the call.  This CEI-violation heuristic catches the classic withdraw-before-
+  balance-update pattern with high precision.
+"""
+from __future__ import annotations
+
 from slither import Slither
 from slither.slithir.operations import HighLevelCall, LowLevelCall, Send, Transfer
 
-def detect_reentrancy(slither: Slither):
+_EXTERNAL_CALL_OPS = (HighLevelCall, LowLevelCall, Send, Transfer)
+
+
+def detect_reentrancy(slither: Slither) -> list[dict]:
     """
-    Detects potential reentrancy vulnerabilities by checking for
-    external calls that occur before state variable updates.
+    Flags functions where an external call precedes a state-variable write
+    that touches a variable read before the call (CEI violation).
     """
-    findings = []
-    
+    findings: list[dict] = []
+    seen:     set[tuple] = set()
+
     for contract in slither.contracts:
+        if contract.is_interface or contract.is_library:
+            continue
+
         for function in contract.functions:
-            # Skip private/internal/constructor as they are less likely to be reentrancy targets
-            if function.is_constructor or function.visibility not in ["public", "external"]:
+            if function.is_constructor:
+                continue
+            if function.visibility not in ("public", "external"):
                 continue
 
-            call_nodes = []
+            call_nodes         = []
             state_update_nodes = []
 
             for node in function.nodes:
-                # Check for any external call operation in the node
                 has_external_call = any(
-                    isinstance(ir, (HighLevelCall, LowLevelCall, Send, Transfer)) 
+                    isinstance(ir, _EXTERNAL_CALL_OPS)
                     for ir in node.irs
                 )
-
                 if has_external_call:
                     call_nodes.append(node)
-                
-                # Track nodes that write to storage
                 if node.state_variables_written:
                     state_update_nodes.append(node)
 
-            # Checks-Effects-Interactions (CEI) Violation Check
             for call_node in call_nodes:
                 if not call_node.source_mapping:
                     continue
-                    
                 call_line = call_node.source_mapping.lines[0]
-                
-                # Find state variables read BEFORE this call
-                vars_read_before_call = set()
+
+                # Collect state variables read before this call
+                vars_read_before: set = set()
                 for node in function.nodes:
                     if node.source_mapping and node.source_mapping.lines[0] < call_line:
-                        vars_read_before_call.update(node.state_variables_read)
+                        vars_read_before.update(node.state_variables_read)
 
-                # Find state variables written AFTER this call
+                # Look for state writes that happen AFTER the call
                 for update_node in state_update_nodes:
                     if not update_node.source_mapping:
                         continue
-                        
                     update_line = update_node.source_mapping.lines[0]
-                    
-                    # Only look at nodes that happen AFTER the call
-                    if call_line < update_line:
-                        vars_written_after_call = set(update_node.state_variables_written)
-                        
-                        # Intersection: Read before AND written after
-                        vulnerable_vars = vars_read_before_call.intersection(vars_written_after_call)
-                        
-                        if vulnerable_vars:
-                            var_names = [v.name for v in vulnerable_vars]
-                            
-                            findings.append({
-                                "vulnerability": "Reentrancy (CEI Violation)",
-                                "contract": contract.name,
-                                "function": function.name,
-                                "line": call_line,
-                                "severity": "High",
-                                "explanation": f"The external call at line {call_line} occurs before state variables ({', '.join(var_names)}) are updated at line {update_line}. This violates the Checks-Effects-Interactions pattern.",
-                                "suggested_fix": f"Reorder the operations in function '{function.name}' to update the state variables ({', '.join(var_names)}) before the external call at line {call_line}."
-                            })
-                            break # Found one violation for this call, move to next
-                            
+                    if update_line <= call_line:
+                        continue
+
+                    vulnerable = vars_read_before.intersection(
+                        update_node.state_variables_written
+                    )
+                    if not vulnerable:
+                        continue
+
+                    key = (contract.name, function.name, call_line)
+                    if key in seen:
+                        break
+                    seen.add(key)
+
+                    var_names = ", ".join(v.name for v in vulnerable)
+                    findings.append({
+                        "vulnerability" : "Reentrancy (CEI Violation)",
+                        "contract"      : contract.name,
+                        "function"      : function.name,
+                        "line"          : call_line,
+                        "severity"      : "High",
+                        "explanation"   : (
+                            f"Function '{function.name}' makes an external call at line "
+                            f"{call_line} before updating state variable(s) "
+                            f"({var_names}) at line {update_line}. "
+                            f"A malicious callee can re-enter this function before "
+                            f"the state is updated, potentially draining funds."
+                        ),
+                        "suggested_fix" : (
+                            f"Move all state updates (including setting {var_names} to "
+                            f"their new values) to BEFORE the external call at line "
+                            f"{call_line}. Alternatively, add a ReentrancyGuard "
+                            f"(e.g., OpenZeppelin's nonReentrant modifier)."
+                        ),
+                    })
+                    break  # one finding per call node
+
     return findings

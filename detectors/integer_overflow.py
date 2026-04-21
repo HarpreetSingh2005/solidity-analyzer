@@ -1,62 +1,74 @@
 # detectors/integer_overflow.py
 """
-Detector: Integer Overflow / Underflow
-Targets: Solidity contracts compiled with pragma < 0.8.0
+Detector: Integer Overflow / Underflow Risk
+SWC-101  |  Severity: High
+Targets:  Solidity < 0.8.0 contracts only
 
 In Solidity < 0.8.0, arithmetic operations on integers do NOT revert on
-overflow/underflow. This can lead to catastrophic logical errors (e.g., a
-balance wrapping from 0 to 2^256-1). Solidity >= 0.8.0 has built-in
-overflow protection, making this a non-issue for modern contracts.
+overflow or underflow — the value silently wraps around (modular arithmetic).
+This has been exploited to mint unlimited tokens (overflow) or bypass balance
+checks (underflow).
+
+Solidity >= 0.8.0 includes built-in checked arithmetic; this detector
+returns no findings for modern contracts.  For pre-0.8.0 contracts, it
+checks whether SafeMath is already in use; if not, every arithmetic
+operation on integer types is a potential vulnerability.
+
+Detection strategy:
+  1. Check pragma directives for Solidity version < 0.8.0.
+  2. Skip contracts that inherit from SafeMath.
+  3. Flag Binary IR ops (ADD, SUB, MUL) on integer-typed lvalues.
+  4. Deduplicate to one finding per (contract, function, op-type).
 """
+from __future__ import annotations
+
 from slither import Slither
 from slither.slithir.operations import Binary, BinaryType
 
-# Arithmetic IR operations that can overflow/underflow
-_OVERFLOW_OPS = {BinaryType.ADDITION, BinaryType.MULTIPLICATION}
-_UNDERFLOW_OPS = {BinaryType.SUBTRACTION}
-_ALL_RISKY_OPS = _OVERFLOW_OPS | _UNDERFLOW_OPS
+_OVERFLOW_OPS  : frozenset = frozenset({BinaryType.ADDITION, BinaryType.MULTIPLICATION})
+_UNDERFLOW_OPS : frozenset = frozenset({BinaryType.SUBTRACTION})
+_ALL_RISKY_OPS : frozenset = _OVERFLOW_OPS | _UNDERFLOW_OPS
 
 
 def _is_pre_08(slither: Slither) -> bool:
-    """Returns True if any compilation unit targets a Solidity version < 0.8.0."""
+    """Return True if any compilation unit targets Solidity < 0.8.0."""
     for cu in slither.compilation_units:
         for pragma in cu.pragma_directives:
             directive = " ".join(pragma.directive)
-            # Look for explicit version pinning like ^0.7.x, 0.6.x, >=0.4.x, etc.
             for part in directive.split():
-                for prefix in ("^", ">=", "<=", "=", ""):
-                    candidate = part.lstrip(prefix)
-                    if candidate.startswith("0.") and len(candidate) >= 3:
-                        try:
-                            minor = int(candidate.split(".")[1])
-                            if minor < 8:
-                                return True
-                        except (ValueError, IndexError):
-                            pass
+                candidate = part.lstrip("^>=<= ")
+                if candidate.startswith("0.") and len(candidate) >= 3:
+                    try:
+                        minor = int(candidate.split(".")[1])
+                        if minor < 8:
+                            return True
+                    except (ValueError, IndexError):
+                        pass
     return False
 
 
-def detect_integer_overflow(slither: Slither):
+def _uses_safemath(contract) -> bool:
+    """Return True if the contract inherits from a SafeMath library."""
+    return any("safemath" in p.name.lower() for p in contract.inheritance)
+
+
+def detect_integer_overflow(slither: Slither) -> list[dict]:
     """
-    Detects unsafe arithmetic on integer types in contracts compiled with
-    Solidity < 0.8.0 (no built-in overflow protection).
-    Flags: addition, subtraction, multiplication on uint/int state variables
-    without SafeMath wrapping.
+    Flags unsafe arithmetic in Solidity < 0.8.0 contracts not using SafeMath.
+    Returns no findings for Solidity >= 0.8.0.
     """
-    findings = []
+    findings: list[dict] = []
 
     if not _is_pre_08(slither):
-        return findings  # >= 0.8.0 has native overflow checks — safe
+        return findings  # >= 0.8.0 — native overflow protection
+
+    seen: set[tuple] = set()
 
     for contract in slither.contracts:
         if contract.is_interface or contract.is_library:
             continue
-
-        # Check if contract uses SafeMath (inheritance or library usage)
-        uses_safemath = any(
-            "safemath" in parent.name.lower()
-            for parent in contract.inheritance
-        )
+        if _uses_safemath(contract):
+            continue
 
         for function in contract.functions:
             if function.is_constructor:
@@ -69,47 +81,40 @@ def detect_integer_overflow(slither: Slither):
                     if ir.type not in _ALL_RISKY_OPS:
                         continue
 
-                    # Only flag operations on integer types
                     lvalue = ir.lvalue
                     if lvalue is None:
                         continue
 
                     type_str = str(lvalue.type).lower()
-                    if not ("uint" in type_str or "int" in type_str):
+                    if "uint" not in type_str and "int" not in type_str:
                         continue
 
-                    if uses_safemath:
-                        continue  # SafeMath guards this contract
+                    op_label = "Overflow" if ir.type in _OVERFLOW_OPS else "Underflow"
+                    key = (contract.name, function.name, op_label)
+                    if key in seen:
+                        continue
+                    seen.add(key)
 
                     line = node.source_mapping.lines[0] if node.source_mapping else "Unknown"
-                    op_name = "overflow" if ir.type in _OVERFLOW_OPS else "underflow"
-
-                    # Deduplicate: one finding per function per op type
-                    already_flagged = any(
-                        f["function"] == function.name and
-                        f["contract"] == contract.name and
-                        op_name in f["vulnerability"].lower()
-                        for f in findings
-                    )
-                    if already_flagged:
-                        continue
-
                     findings.append({
-                        "vulnerability": f"Integer {op_name.capitalize()} Risk",
-                        "contract": contract.name,
-                        "function": function.name,
-                        "line": line,
-                        "severity": "High",
-                        "explanation": (
-                            f"Function '{function.name}' performs arithmetic ({ir.type.name}) on an integer "
-                            f"at line {line} in a Solidity < 0.8.0 contract. Without SafeMath or built-in "
-                            f"overflow protection, this can silently wrap around and corrupt balances or "
-                            f"counters."
+                        "vulnerability" : f"Integer {op_label} Risk",
+                        "contract"      : contract.name,
+                        "function"      : function.name,
+                        "line"          : line,
+                        "severity"      : "High",
+                        "explanation"   : (
+                            f"Function '{function.name}' performs '{ir.type.name}' "
+                            f"arithmetic on an integer variable at line {line} in a "
+                            f"Solidity < 0.8.0 contract without SafeMath. On {op_label.lower()}, "
+                            f"the value wraps silently — e.g., a balance could wrap from "
+                            f"0 to 2^256-1, giving an attacker unlimited funds."
                         ),
-                        "suggested_fix": (
-                            "Either upgrade the pragma to ^0.8.0 (which enables native overflow checks) "
-                            "or use OpenZeppelin's SafeMath library for all arithmetic operations."
-                        )
+                        "suggested_fix" : (
+                            "Upgrade the compiler pragma to '^0.8.0' to enable native "
+                            "checked arithmetic, or wrap all arithmetic in "
+                            "OpenZeppelin's SafeMath library functions "
+                            "(SafeMath.add, SafeMath.sub, SafeMath.mul)."
+                        ),
                     })
 
     return findings

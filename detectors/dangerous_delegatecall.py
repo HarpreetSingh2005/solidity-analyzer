@@ -1,54 +1,50 @@
 # detectors/dangerous_delegatecall.py
 """
 Detector: Delegatecall to Untrusted / Dynamic Address
-Solidity SWC-112
+SWC-112  |  Severity: Critical
 
-delegatecall() executes code from another contract but in the CALLER's storage
-context. If the target address is user-controlled, attacker-supplied, or stored
-in a mutable state variable (not an immutable/constant), an attacker can
-supply a malicious contract that wipes or corrupts the caller's storage,
-drains ETH, or takes ownership.
+delegatecall() executes code from another contract but in the CALLER'S
+storage context. If the target address is user-controlled, stored in a
+mutable state variable, or derived from function arguments, an attacker can
+supply a malicious contract that:
+  - Wipes or corrupts the caller's storage layout
+  - Resets the owner variable to the attacker's address
+  - Drains all ETH from the contract
+
+Safe delegatecall targets are constants or immutables set once at
+construction time and never changed.
+
+Detection strategy:
+  Inspect all LowLevelCall IR operations where function_name == 'delegatecall'.
+  If the destination is not a StateVariable marked constant/immutable, flag it.
 """
+from __future__ import annotations
+
 from slither import Slither
 from slither.slithir.operations import LowLevelCall
-from slither.core.declarations import (
-    Contract,
-    SolidityVariableComposed,
-)
 from slither.core.variables.state_variable import StateVariable
-from slither.core.variables.local_variable import LocalVariable
 
 
 def _is_safe_address(destination) -> bool:
-    """
-    Returns True if the delegatecall destination is provably safe
-    (hardcoded constant/immutable state variable).
-    """
-    if destination is None:
-        return False
-
-    # If it's a StateVariable that is constant or immutable → safe
+    """Return True only if destination is a constant or immutable state variable."""
     if isinstance(destination, StateVariable):
         return destination.is_constant or destination.is_immutable
-
     return False
 
 
-def detect_dangerous_delegatecall(slither: Slither):
+def detect_dangerous_delegatecall(slither: Slither) -> list[dict]:
     """
-    Detects low-level delegatecall() calls where the target address is not a
-    hardcoded constant/immutable — i.e., it could be influenced by user input
-    or a mutable state variable.
-    Severity: Critical
+    Flags delegatecall() calls where the target address is not provably safe
+    (i.e., not a constant/immutable state variable).
     """
-    findings = []
-    seen = set()
+    findings: list[dict] = []
+    seen:     set[tuple] = set()
 
     for contract in slither.contracts:
         if contract.is_interface or contract.is_library:
             continue
 
-        for function in contract.functions + list(contract.modifiers):
+        for function in list(contract.functions) + list(contract.modifiers):
             for node in function.nodes:
                 for ir in node.irs:
                     if not isinstance(ir, LowLevelCall):
@@ -58,37 +54,37 @@ def detect_dangerous_delegatecall(slither: Slither):
 
                     destination = ir.destination
                     key = (contract.name, function.name, str(destination))
-
                     if key in seen:
                         continue
                     seen.add(key)
 
                     if _is_safe_address(destination):
-                        continue  # Fixed address — not dangerous
+                        continue  # constant/immutable address — safe
 
-                    line = node.source_mapping.lines[0] if node.source_mapping else "Unknown"
+                    line      = node.source_mapping.lines[0] if node.source_mapping else "Unknown"
                     dest_desc = str(destination) if destination else "unknown address"
 
                     findings.append({
-                        "vulnerability": "Dangerous Delegatecall",
-                        "contract": contract.name,
-                        "function": function.name,
-                        "line": line,
-                        "severity": "Critical",
-                        "explanation": (
-                            f"Function '{function.name}' performs a delegatecall to a non-constant "
-                            f"address ('{dest_desc}') at line {line}. delegatecall executes foreign "
-                            f"bytecode inside this contract's own storage context. If the destination "
-                            f"is user-controlled or can be changed by an attacker, they can destroy "
+                        "vulnerability" : "Dangerous Delegatecall",
+                        "contract"      : contract.name,
+                        "function"      : function.name,
+                        "line"          : line,
+                        "severity"      : "Critical",
+                        "explanation"   : (
+                            f"Function '{function.name}' performs a delegatecall to a "
+                            f"non-constant address ('{dest_desc}') at line {line}. "
+                            f"delegatecall executes foreign bytecode inside this "
+                            f"contract's own storage context. If the destination is "
+                            f"user-controlled or mutable, an attacker can corrupt "
                             f"storage, steal ownership, or drain funds."
                         ),
-                        "suggested_fix": (
-                            "Ensure the delegatecall target is a hardcoded constant or an immutable "
-                            "variable set only in the constructor. Never delegatecall to an address "
-                            "supplied by msg.sender or stored in a mutable state variable. "
-                            "Consider using OpenZeppelin's upgradeable proxy patterns which enforce "
-                            "these constraints."
-                        )
+                        "suggested_fix" : (
+                            "Ensure the delegatecall target is a 'constant' or "
+                            "'immutable' address set only in the constructor. Never "
+                            "delegatecall to an address passed as a parameter or "
+                            "stored in a mutable state variable. Prefer OpenZeppelin's "
+                            "upgradeable proxy patterns which enforce these constraints."
+                        ),
                     })
 
     return findings

@@ -1,63 +1,139 @@
 # detectors/access_control.py
+"""
+Detector: Missing Access Control on Privileged Operations
+SWC-105  |  Severity: Critical
+
+Functions that write to ownership/admin state variables (owner, admin,
+governor, etc.) or perform privileged actions (pause, upgrade, etc.) must
+be protected by an explicit access control mechanism — a modifier like
+onlyOwner, or an inline require(msg.sender == owner) check.  When such
+protection is absent, ANY external address can take over or disrupt the
+contract.
+
+Detection strategy:
+  1. Identify state variables with privileged names (owner, admin, …).
+  2. Find public/external functions that write to those variables.
+  3. Flag functions that have neither a recognised access modifier NOR an
+     inline msg.sender comparison.
+"""
+from __future__ import annotations
+
 from slither import Slither
 
-def detect_access_control(slither: Slither):
+# Variable names that indicate privileged/ownership state
+_PRIVILEGED_NAMES: frozenset[str] = frozenset({
+    "owner", "admin", "governor", "authority", "operator",
+    "controller", "superuser", "multisig",
+})
+
+# Substrings that indicate an access-control modifier
+_ACCESS_MOD_KEYWORDS: tuple[str, ...] = (
+    "onlyowner", "onlyadmin", "onlyrole", "authorized",
+    "onlygovernor", "onlyoperator", "onlycontroller",
+)
+
+
+def detect_access_control(slither: Slither) -> list[dict]:
     """
-    Detects functions that modify sensitive state variables but lack access control.
+    Flags public/external functions that modify a privileged state variable
+    without any access-control guard.
     """
-    findings = []
-    # Common privileged variable names to look for
-    SENSITIVE_VARS = ["owner", "admin", "governor", "authority"]
+    findings: list[dict] = []
+    seen:     set[tuple] = set()
 
     for contract in slither.contracts:
-        # Get all state variables in this contract that match sensitive names
-        privileged_vars = [v for v in contract.state_variables if v.name.lower() in SENSITIVE_VARS]
-        
+        if contract.is_interface or contract.is_library:
+            continue
+
+        # Collect privileged state variables defined in this contract
+        privileged_vars = [
+            v for v in contract.state_variables
+            if v.name.lower() in _PRIVILEGED_NAMES
+        ]
         if not privileged_vars:
             continue
 
         for function in contract.functions:
-            # Skip constructor, private, internal, or view/pure functions
-            if function.is_constructor or function.visibility in ["private", "internal", "view", "pure"]:
+            if function.is_constructor:
+                continue
+            if function.visibility in ("private", "internal"):
                 continue
 
-            # Check if function writes to a privileged variable
-            writes_to_privileged = False
-            target_var = ""
-            for node in function.nodes:
-                written_vars = [var.name for var in node.state_variables_written if var in privileged_vars]
-                if written_vars:
-                    writes_to_privileged = True
-                    target_var = written_vars[0]
-                    break
-
-            if not writes_to_privileged:
+            key = (contract.name, function.name)
+            if key in seen:
                 continue
 
-            # Check for protection modifiers
-            modifier_names = [mod.name.lower() for mod in function.modifiers]
-            is_protected = any("onlyowner" in m or "onlyadmin" in m or "onlyrole" in m or "authorized" in m for m in modifier_names)
+            # Check if function writes to any privileged variable
+            target_var = _writes_privileged(function, privileged_vars)
+            if target_var is None:
+                continue
 
-            # Also check for explicit msg.sender checks in the function body
-            has_require_check = False
-            for node in function.nodes:
-                for ir in node.irs:
-                    # Look for require/assert/if logic involving msg.sender
-                    ir_str = str(ir).lower()
-                    if "msg.sender" in ir_str and ("require" in ir_str or "revert" in ir_str):
-                        has_require_check = True
-                        break
+            # Check for modifier-based guard
+            mod_names = [m.name.lower() for m in function.modifiers]
+            is_modifier_protected = any(
+                kw in m for m in mod_names for kw in _ACCESS_MOD_KEYWORDS
+            )
 
-            if not is_protected and not has_require_check:
-                line = function.nodes[0].source_mapping.lines[0] if function.nodes else "Unknown"
-                findings.append({
-                    "vulnerability": "Missing Access Control",
-                    "contract": contract.name,
-                    "function": function.name,
-                    "line": line,
-                    "severity": "Critical",
-                    "explanation": f"The function '{function.name}' updates the sensitive variable '{target_var}' but does not seem to have any access control (like onlyOwner). This allows any external actor to take control of the contract.",
-                    "suggested_fix": f"Add an access control modifier (e.g., 'onlyOwner') to the function '{function.name}' at line {line}."
-                })
-                
+            # Check for inline require/revert involving msg.sender
+            is_inline_protected = _has_sender_check(function)
+
+            if is_modifier_protected or is_inline_protected:
+                continue
+
+            seen.add(key)
+            line = _first_line(function)
+            findings.append({
+                "vulnerability" : "Missing Access Control",
+                "contract"      : contract.name,
+                "function"      : function.name,
+                "line"          : line,
+                "severity"      : "Critical",
+                "explanation"   : (
+                    f"Function '{function.name}' modifies the privileged state "
+                    f"variable '{target_var}' but has no access-control guard "
+                    f"(no onlyOwner modifier, no require(msg.sender == ...) check). "
+                    f"Any external address can call this function and take control "
+                    f"of the contract."
+                ),
+                "suggested_fix" : (
+                    f"Add an access control modifier to '{function.name}' — e.g., "
+                    f"'modifier onlyOwner {{ require(msg.sender == owner, "
+                    f"\"Not owner\"); _; }}' — or add "
+                    f"'require(msg.sender == owner, \"Not owner\");' at the start "
+                    f"of the function body."
+                ),
+            })
+
     return findings
+
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def _writes_privileged(function, privileged_vars: list) -> str | None:
+    """Return the name of the first privileged var written, or None."""
+    for node in function.nodes:
+        for var in node.state_variables_written:
+            if var in privileged_vars:
+                return var.name
+    return None
+
+
+def _has_sender_check(function) -> bool:
+    """True if any IR node contains a msg.sender comparison in require/revert."""
+    for node in function.nodes:
+        for ir in node.irs:
+            ir_str = str(ir).lower()
+            if "msg.sender" in ir_str and any(
+                kw in ir_str for kw in ("require", "revert", "assert")
+            ):
+                return True
+    return False
+
+
+def _first_line(function) -> int | str:
+    """Return the first source line of a function, or 'Unknown'."""
+    if function.nodes and function.nodes[0].source_mapping:
+        return function.nodes[0].source_mapping.lines[0]
+    if function.source_mapping:
+        return function.source_mapping.lines[0]
+    return "Unknown"
