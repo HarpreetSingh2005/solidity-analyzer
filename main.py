@@ -1,5 +1,6 @@
 # main.py
 import argparse
+import sys
 from pathlib import Path
 from core.analyzer import run_full_analysis
 
@@ -37,10 +38,16 @@ def display_report(report):
 
 if __name__ == "__main__":
     print_banner()
-    parser = argparse.ArgumentParser(description="SESA CLI")
+    parser = argparse.ArgumentParser(description="SESA CLI — Solidity Explainable Static Analyzer")
     parser.add_argument("contract", help="Path to Solidity contract")
-    parser.add_argument("--no-ml", action="store_false", dest="ml", help="Disable ML")
+    parser.add_argument("--mode", choices=["static", "hybrid"], default="static", help="Analysis mode: 'static' (Slither only) or 'hybrid' (Static + ML)")
     args = parser.parse_args()
 
-    report = run_full_analysis(args.contract, run_ml=args.ml)
+    contract_path = Path(args.contract)
+    if not contract_path.exists():
+        print(f"[ERROR] File not found: {args.contract}")
+        sys.exit(1)
+
+    run_ml = args.mode == "hybrid"
+    report = run_full_analysis(args.contract, run_ml=run_ml)
     display_report(report)
