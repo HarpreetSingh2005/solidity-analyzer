@@ -1,79 +1,68 @@
-# ml/model.py
-import os
-import joblib
-import numpy as np
+# SESA - Final Training on 241 Samples
+
+!pip install pandas scikit-learn joblib xgboost lightgbm matplotlib seaborn -q
+
+from google.colab import files
+import pandas as pd
+import io
+
+print("Upload latest features.csv (241 rows)")
+uploaded = files.upload()
+df = pd.read_csv(io.BytesIO(uploaded[list(uploaded.keys())[0]]))
+
+print(f"✅ Loaded {len(df)} samples | Vulnerable: {df['label'].sum()} | Safe: {len(df)-df['label'].sum()}")
+
+feature_cols = [
+    "num_functions", "num_external_calls", "calls_before_state_update",
+    "num_state_vars", "has_tx_origin", "has_selfdestruct", "avg_function_size",
+    "num_payable_functions", "num_modifiers", "num_state_writes",
+    "has_delegatecall", "has_assembly", "uses_tx_origin_in_condition",
+    "external_call_before_any_state_update", "has_unchecked_external_call",
+    "has_balance_check_before_send", "max_call_depth",
+    "has_reentrancy_guard_pattern", "num_user_controlled_inputs_to_state"
+]
+
+X = df[feature_cols].fillna(0)
+y = df["label"]
+
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, f1_score, classification_report
+import joblib
 
-# Attempt to import SHAP for explainability, handle gracefully if missing
-try:
-    import shap
-    SHAP_AVAILABLE = True
-except ImportError:
-    SHAP_AVAILABLE = False
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "model.pkl")
+results = []
 
-def train_and_save_model(X, y):
-    """
-    Simple training function designed for Google Colab/local small datasets.
-    """
-    model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
-    model.fit(X, y)
-    joblib.dump(model, MODEL_PATH)
-    print(f"[ML] Model trained and saved to {MODEL_PATH}")
-    return model
+print("\n=== Training Multiple Models ===")
 
-def load_model():
-    """
-    Loads the pre-trained model from disk.
-    If not found, creates a dummy model for initial development/testing.
-    """
-    if os.path.exists(MODEL_PATH):
-        try:
-            return joblib.load(MODEL_PATH)
-        except Exception as e:
-            print(f"[ML Warning] Failed to load model: {e}")
-    
-    # Generate a dummy model if none exists so the code doesn't crash on first run
-    print("[ML] No model.pkl found. Initializing dummy model for testing...")
-    dummy_model = RandomForestClassifier(n_estimators=10, max_depth=3, random_state=42)
-    # Train on 16 zero-features (matching num_features in extractor)
-    X_dummy = np.zeros((2, 16))
-    y_dummy = np.array([0, 1])
-    dummy_model.fit(X_dummy, y_dummy)
-    return dummy_model
+# Random Forest
+rf = RandomForestClassifier(n_estimators=500, max_depth=12, class_weight='balanced', random_state=42, n_jobs=-1)
+rf.fit(X_train, y_train)
+pred = rf.predict(X_test)
+results.append(["RandomForest", round(accuracy_score(y_test, pred), 4), round(f1_score(y_test, pred), 4)])
 
-def predict_vulnerability(model, X_features):
-    """
-    Predicts vulnerability probability for a set of features.
-    """
-    probs = model.predict_proba(X_features)[:, 1]
-    labels = (probs > 0.5).astype(int)
-    return labels, probs
+# XGBoost
+xgb = XGBClassifier(n_estimators=400, max_depth=7, learning_rate=0.08, scale_pos_weight=143/98, random_state=42)
+xgb.fit(X_train, y_train)
+pred = xgb.predict(X_test)
+results.append(["XGBoost", round(accuracy_score(y_test, pred), 4), round(f1_score(y_test, pred), 4)])
 
-def get_explanations(model, X_features, feature_names):
-    """
-    Uses SHAP to explain why the ML model made its decisions.
-    Returns a list of top contributing features for each prediction.
-    """
-    if not SHAP_AVAILABLE:
-        return ["SHAP library not installed for AI reasoning."] * len(X_features)
+# LightGBM
+lgb = LGBMClassifier(n_estimators=400, max_depth=8, learning_rate=0.1, class_weight='balanced', random_state=42, verbose=-1)
+lgb.fit(X_train, y_train)
+pred = lgb.predict(X_test)
+results.append(["LightGBM", round(accuracy_score(y_test, pred), 4), round(f1_score(y_test, pred), 4)])
 
-    try:
-        explainer = shap.TreeExplainer(model)
-        shap_values = explainer.shap_values(X_features)
-        
-        # shap_values[1] contains values for the 'Vulnerable' class
-        explanations = []
-        for i in range(len(X_features)):
-            # Get indices of top 3 features with highest SHAP values
-            top_indices = np.argsort(np.abs(shap_values[1][i]))[-3:][::-1]
-            reasons = [feature_names[idx] for idx in top_indices if np.abs(shap_values[1][i][idx]) > 0.01]
-            
-            if reasons:
-                explanations.append(f"Strongly influenced by: {', '.join(reasons)}")
-            else:
-                explanations.append("Decision based on multiple low-impact features.")
-        return explanations
-    except Exception as e:
-        return [f"Reasoning unavailable: {str(e)}"] * len(X_features)
+# Comparison
+comparison = pd.DataFrame(results, columns=["Model", "Accuracy", "F1-Score"])
+print(comparison.sort_values(by="F1-Score", ascending=False))
+
+# Save Best Model (usually RandomForest)
+joblib.dump(rf, 'model.pkl')
+files.download('model.pkl')
+
+print("\n✅ Best model downloaded as model.pkl")

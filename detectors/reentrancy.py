@@ -1,7 +1,10 @@
 # detectors/reentrancy.py
+
 from __future__ import annotations
+
 from slither import Slither
 from slither.slithir.operations import HighLevelCall, LowLevelCall, Send, Transfer
+
 
 def detect_reentrancy(slither: Slither) -> list[dict]:
     """

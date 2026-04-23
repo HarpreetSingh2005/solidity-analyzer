@@ -1,121 +1,242 @@
-contract_name,function_name,line_number,num_nodes,num_lines,num_parameters,num_modifiers,is_payable,is_constructor,visibility_score,num_external_calls,num_internal_calls,num_state_reads,num_state_writes,has_tx_origin,has_msg_value,can_send_eth,has_assembly,calls_before_state_update,contract_path,label,category,description
-BrokenRewards,deposit(uint256),20,5,7,1,0,0,0,2,0,1,4,4,0,0,1,0,0,dataset\business_logic\broken_rewards.sol,1,business_logic,Reward-per-share computed with integer division before multiplication — rewards flood to zero when totalStaked is large
-BrokenRewards,addRewards(uint256),28,3,4,1,0,0,0,2,0,1,2,2,0,0,1,0,0,dataset\business_logic\broken_rewards.sol,1,business_logic,Reward-per-share computed with integer division before multiplication — rewards flood to zero when totalStaked is large
-BrokenRewards,_updateRewardPerShare(),33,5,5,0,0,0,0,1,0,0,2,1,0,0,1,0,0,dataset\business_logic\broken_rewards.sol,1,business_logic,Reward-per-share computed with integer division before multiplication — rewards flood to zero when totalStaked is large
-BrokenRewards,claimRewards(),39,5,7,0,0,0,0,2,0,1,5,2,0,0,1,0,0,dataset\business_logic\broken_rewards.sol,1,business_logic,Reward-per-share computed with integer division before multiplication — rewards flood to zero when totalStaked is large
-BrokenRewards,receive(),47,2,1,0,0,1,0,2,0,0,1,1,0,1,1,0,0,dataset\business_logic\broken_rewards.sol,1,business_logic,Reward-per-share computed with integer division before multiplication — rewards flood to zero when totalStaked is large
-VestingBypass,"createVesting(uint256,uint256,uint256)",26,4,5,3,0,0,0,2,0,1,1,2,0,0,1,0,0,dataset\business_logic\vesting_bypass.sol,1,business_logic,"Vesting cliff bypass: transferring internal balance detaches it from the vesting schedule, allowing immediate withdrawal"
-VestingBypass,"transferBalance(address,uint256)",33,4,6,2,0,0,0,2,0,1,1,1,0,0,1,0,0,dataset\business_logic\vesting_bypass.sol,1,business_logic,"Vesting cliff bypass: transferring internal balance detaches it from the vesting schedule, allowing immediate withdrawal"
-VestingBypass,withdraw(uint256),40,11,12,1,0,0,0,2,0,2,2,1,0,0,1,0,1,dataset\business_logic\vesting_bypass.sol,1,business_logic,"Vesting cliff bypass: transferring internal balance detaches it from the vesting schedule, allowing immediate withdrawal"
-VestingBypass,receive(),53,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\business_logic\vesting_bypass.sol,1,business_logic,"Vesting cliff bypass: transferring internal balance detaches it from the vesting schedule, allowing immediate withdrawal"
-FeeRounding,constructor(address),18,2,3,1,0,0,1,3,0,0,0,1,0,0,1,0,0,dataset\business_logic\fee_rounding.sol,1,business_logic,"Fee calculation uses integer division that rounds to zero for small amounts, enabling free trades via transaction splitting"
-FeeRounding,deposit(),22,2,3,0,0,1,0,2,0,0,1,1,0,1,1,0,0,dataset\business_logic\fee_rounding.sol,1,business_logic,"Fee calculation uses integer division that rounds to zero for small amounts, enabling free trades via transaction splitting"
-FeeRounding,"swap(address,uint256)",26,9,14,2,0,0,0,2,0,1,3,1,0,0,1,0,0,dataset\business_logic\fee_rounding.sol,1,business_logic,"Fee calculation uses integer division that rounds to zero for small amounts, enabling free trades via transaction splitting"
-FeeRounding,withdraw(),41,4,5,0,0,0,0,2,0,0,1,1,0,0,1,0,0,dataset\business_logic\fee_rounding.sol,1,business_logic,"Fee calculation uses integer division that rounds to zero for small amounts, enabling free trades via transaction splitting"
-FeeRounding,receive(),47,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\business_logic\fee_rounding.sol,1,business_logic,"Fee calculation uses integer division that rounds to zero for small amounts, enabling free trades via transaction splitting"
-FeeRounding,slitherConstructorConstantVariables(),13,1,36,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\business_logic\fee_rounding.sol,1,business_logic,"Fee calculation uses integer division that rounds to zero for small amounts, enabling free trades via transaction splitting"
-GovernanceDoubleVote,constructor(),21,2,3,0,0,0,1,3,0,0,1,1,0,0,1,0,0,dataset\business_logic\governance_doublevote.sol,1,business_logic,"Governance votes counted from live token balance, not a snapshot — allows double-voting by transferring tokens between accounts"
-GovernanceDoubleVote,"transfer(address,uint256)",25,4,5,2,0,0,0,2,0,1,1,1,0,0,1,0,0,dataset\business_logic\governance_doublevote.sol,1,business_logic,"Governance votes counted from live token balance, not a snapshot — allows double-voting by transferring tokens between accounts"
-GovernanceDoubleVote,createProposal(),31,2,4,0,0,0,0,2,0,0,1,1,0,0,1,0,0,dataset\business_logic\governance_doublevote.sol,1,business_logic,"Governance votes counted from live token balance, not a snapshot — allows double-voting by transferring tokens between accounts"
-GovernanceDoubleVote,"castVote(uint256,bool)",36,8,9,2,0,0,0,2,0,1,4,3,0,0,1,0,0,dataset\business_logic\governance_doublevote.sol,1,business_logic,"Governance votes counted from live token balance, not a snapshot — allows double-voting by transferring tokens between accounts"
-GovernanceDoubleVote,isProposalPassed(uint256),46,2,3,1,0,0,0,2,0,0,2,0,0,0,1,0,0,dataset\business_logic\governance_doublevote.sol,1,business_logic,"Governance votes counted from live token balance, not a snapshot — allows double-voting by transferring tokens between accounts"
-GovernanceDoubleVote,slitherConstructorVariables(),13,1,37,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\business_logic\governance_doublevote.sol,1,business_logic,"Governance votes counted from live token balance, not a snapshot — allows double-voting by transferring tokens between accounts"
-EscrowGriefing,"constructor(address,uint256)",23,5,6,2,0,1,1,3,0,0,0,4,0,0,1,0,0,dataset\business_logic\escrow_griefing.sol,1,business_logic,Escrow griefed by dust ETH deposits breaking exact-balance invariant; seller can self-release after timeout without arbitration
-EscrowGriefing,confirmPayment(),30,5,7,0,0,1,0,2,0,4,3,1,0,0,1,0,0,dataset\business_logic\escrow_griefing.sol,1,business_logic,Escrow griefed by dust ETH deposits breaking exact-balance invariant; seller can self-release after timeout without arbitration
-EscrowGriefing,raiseDispute(),38,3,4,0,0,0,0,2,0,1,2,1,0,0,1,0,0,dataset\business_logic\escrow_griefing.sol,1,business_logic,Escrow griefed by dust ETH deposits breaking exact-balance invariant; seller can self-release after timeout without arbitration
-EscrowGriefing,sellerRelease(),44,4,5,0,0,0,0,2,0,3,2,0,0,0,1,0,0,dataset\business_logic\escrow_griefing.sol,1,business_logic,Escrow griefed by dust ETH deposits breaking exact-balance invariant; seller can self-release after timeout without arbitration
-EscrowGriefing,receive(),51,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\business_logic\escrow_griefing.sol,1,business_logic,Escrow griefed by dust ETH deposits breaking exact-balance invariant; seller can self-release after timeout without arbitration
-DutchAuctionFloor,"constructor(uint256,uint256,uint256)",23,6,7,3,0,0,1,3,0,0,0,5,0,0,1,0,0,dataset\business_logic\dutch_auction_floor.sol,1,business_logic,Dutch auction floor price is stored but never enforced in price calculation; price decays to 0 allowing free bids
-DutchAuctionFloor,currentPrice(),31,6,6,0,0,0,0,3,0,0,3,0,0,0,1,0,0,dataset\business_logic\dutch_auction_floor.sol,1,business_logic,Dutch auction floor price is stored but never enforced in price calculation; price decays to 0 allowing free bids
-DutchAuctionFloor,bid(),38,11,11,0,0,1,0,2,0,3,5,2,0,1,1,0,0,dataset\business_logic\dutch_auction_floor.sol,1,business_logic,Dutch auction floor price is stored but never enforced in price calculation; price decays to 0 allowing free bids
-DutchAuctionFloor,extendAuction(uint256),51,3,4,1,0,0,0,2,0,1,2,1,0,0,1,0,0,dataset\business_logic\dutch_auction_floor.sol,1,business_logic,Dutch auction floor price is stored but never enforced in price calculation; price decays to 0 allowing free bids
-YieldCheckpoint,_updateYield(),22,8,6,0,0,0,0,1,0,0,4,2,0,0,1,0,0,dataset\business_logic\yield_checkpoint.sol,1,business_logic,Yield checkpoint not set on deposit — new depositors retroactively earn all yield accumulated before their entry
-YieldCheckpoint,deposit(uint256),29,4,7,1,0,0,0,2,0,1,5,4,0,0,1,0,0,dataset\business_logic\yield_checkpoint.sol,1,business_logic,Yield checkpoint not set on deposit — new depositors retroactively earn all yield accumulated before their entry
-YieldCheckpoint,claimYield(),37,6,7,0,0,0,0,2,0,1,6,3,0,0,1,0,0,dataset\business_logic\yield_checkpoint.sol,1,business_logic,Yield checkpoint not set on deposit — new depositors retroactively earn all yield accumulated before their entry
-YieldCheckpoint,receive(),45,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\business_logic\yield_checkpoint.sol,1,business_logic,Yield checkpoint not set on deposit — new depositors retroactively earn all yield accumulated before their entry
-YieldCheckpoint,slitherConstructorVariables(),14,1,33,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\business_logic\yield_checkpoint.sol,1,business_logic,Yield checkpoint not set on deposit — new depositors retroactively earn all yield accumulated before their entry
-NFTRevealFrontrun,mint(),21,6,7,0,0,1,0,2,0,2,3,2,0,1,1,0,0,dataset\business_logic\nft_reveal_frontrun.sol,1,business_logic,NFT rarity assigned using blockhash and block.timestamp — validators can selectively include reveal transactions to pick rare traits
-NFTRevealFrontrun,revealToken(uint256),29,11,13,1,0,0,0,2,0,4,1,1,0,0,1,0,0,dataset\business_logic\nft_reveal_frontrun.sol,1,business_logic,NFT rarity assigned using blockhash and block.timestamp — validators can selectively include reveal transactions to pick rare traits
-NFTRevealFrontrun,slitherConstructorVariables(),14,1,29,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\business_logic\nft_reveal_frontrun.sol,1,business_logic,NFT rarity assigned using blockhash and block.timestamp — validators can selectively include reveal transactions to pick rare traits
-NFTRevealFrontrun,slitherConstructorConstantVariables(),14,1,29,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\business_logic\nft_reveal_frontrun.sol,1,business_logic,NFT rarity assigned using blockhash and block.timestamp — validators can selectively include reveal transactions to pick rare traits
-IncorrectLiquidation,deposit(uint256),25,2,3,1,0,0,0,2,0,0,1,1,0,0,1,0,0,dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check compares raw collateral to debt instead of applying LTV threshold — allows 100% LTV borrowing
-IncorrectLiquidation,borrow(uint256),29,3,5,1,0,0,0,2,0,2,1,1,0,0,1,0,0,dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check compares raw collateral to debt instead of applying LTV threshold — allows 100% LTV borrowing
-IncorrectLiquidation,isHealthy(address),35,6,6,1,0,0,0,3,0,0,1,0,0,0,1,0,0,dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check compares raw collateral to debt instead of applying LTV threshold — allows 100% LTV borrowing
-IncorrectLiquidation,liquidate(address),42,9,11,1,0,0,0,2,0,3,2,1,0,0,1,0,0,dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check compares raw collateral to debt instead of applying LTV threshold — allows 100% LTV borrowing
-IncorrectLiquidation,receive(),54,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check compares raw collateral to debt instead of applying LTV threshold — allows 100% LTV borrowing
-IncorrectLiquidation,slitherConstructorConstantVariables(),15,2,41,0,0,0,0,1,0,0,0,2,0,0,1,0,0,dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check compares raw collateral to debt instead of applying LTV threshold — allows 100% LTV borrowing
-BridgeOrdering,"constructor(address,address)",25,3,4,2,0,0,1,3,0,0,0,2,0,0,1,0,0,dataset\business_logic\bridge_ordering.sol,1,business_logic,"Bridge mints wrapped tokens before proof verification — if verification reverts post-mint, tokens are irreversibly distributed"
-BridgeOrdering,"bridgeIn(address,uint256,bytes32)",30,6,17,3,0,0,0,2,1,3,2,1,0,0,1,0,1,dataset\business_logic\bridge_ordering.sol,1,business_logic,"Bridge mints wrapped tokens before proof verification — if verification reverts post-mint, tokens are irreversibly distributed"
-BridgeOrdering,"_verifyProof(bytes32,address,uint256)",48,2,7,3,0,0,0,1,0,0,0,0,0,0,1,0,0,dataset\business_logic\bridge_ordering.sol,1,business_logic,"Bridge mints wrapped tokens before proof verification — if verification reverts post-mint, tokens are irreversibly distributed"
-BridgeOrdering,"bridgeOut(address,uint256)",56,2,4,2,0,0,0,2,1,0,1,0,0,0,1,0,0,dataset\business_logic\bridge_ordering.sol,1,business_logic,"Bridge mints wrapped tokens before proof verification — if verification reverts post-mint, tokens are irreversibly distributed"
-SpotPriceOracle,"constructor(address,address)",21,3,4,2,0,0,1,3,0,0,0,2,0,0,1,0,0,dataset\price_oracle\spot_price_uniswap.sol,1,price_oracle,Uses Uniswap V2 getReserves() as price oracle — fully manipulatable within a single flash-loan transaction
-SpotPriceOracle,getPrice(),27,6,6,0,0,0,0,3,1,1,1,0,0,0,1,0,0,dataset\price_oracle\spot_price_uniswap.sol,1,price_oracle,Uses Uniswap V2 getReserves() as price oracle — fully manipulatable within a single flash-loan transaction
-SpotPriceOracle,getCollateralValue(uint256),34,2,4,1,0,0,0,2,0,1,1,0,0,0,1,0,0,dataset\price_oracle\spot_price_uniswap.sol,1,price_oracle,Uses Uniswap V2 getReserves() as price oracle — fully manipulatable within a single flash-loan transaction
-StaleChainlink,constructor(address),26,2,3,1,0,0,1,3,0,0,0,1,0,0,1,0,0,dataset\price_oracle\stale_chainlink.sol,1,price_oracle,Chainlink latestRoundData() called without staleness or round-completeness checks — stale prices accepted silently
-StaleChainlink,getPrice(),30,8,18,0,0,0,0,3,1,1,1,0,0,0,1,0,0,dataset\price_oracle\stale_chainlink.sol,1,price_oracle,Chainlink latestRoundData() called without staleness or round-completeness checks — stale prices accepted silently
-StaleChainlink,assetValue(uint256),49,3,4,1,0,0,0,2,1,1,1,0,0,0,1,0,0,dataset\price_oracle\stale_chainlink.sol,1,price_oracle,Chainlink latestRoundData() called without staleness or round-completeness checks — stale prices accepted silently
-StaleChainlink,slitherConstructorConstantVariables(),22,1,32,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\price_oracle\stale_chainlink.sol,1,price_oracle,Chainlink latestRoundData() called without staleness or round-completeness checks — stale prices accepted silently
-SelfReferentialOracle,getTokenPrice(),20,3,4,0,0,0,0,3,0,1,2,0,0,0,1,0,0,dataset\price_oracle\self_referential.sol,1,price_oracle,Protocol uses its own reserve ratio as price oracle — trades against the same pool shift the price used for borrowing limits
-SelfReferentialOracle,addLiquidity(uint256),25,4,5,1,0,1,0,2,0,0,3,3,0,1,1,0,0,dataset\price_oracle\self_referential.sol,1,price_oracle,Protocol uses its own reserve ratio as price oracle — trades against the same pool shift the price used for borrowing limits
-SelfReferentialOracle,swapEthForTokens(uint256),32,6,7,1,0,1,0,2,0,1,3,3,0,1,1,0,0,dataset\price_oracle\self_referential.sol,1,price_oracle,Protocol uses its own reserve ratio as price oracle — trades against the same pool shift the price used for borrowing limits
-SelfReferentialOracle,borrowAgainstToken(uint256),41,5,6,1,0,0,0,2,0,1,3,1,0,0,1,0,0,dataset\price_oracle\self_referential.sol,1,price_oracle,Protocol uses its own reserve ratio as price oracle — trades against the same pool shift the price used for borrowing limits
-SelfReferentialOracle,receive(),48,2,1,0,0,1,0,2,0,0,1,1,0,1,1,0,0,dataset\price_oracle\self_referential.sol,1,price_oracle,Protocol uses its own reserve ratio as price oracle — trades against the same pool shift the price used for borrowing limits
-TwapShortWindow,update(uint256),24,4,9,1,0,0,0,2,0,0,2,2,0,0,1,0,0,dataset\price_oracle\twap_short_window.sol,1,price_oracle,TWAP window is only 12 seconds (1 block) — a single manipulated trade fully determines the oracle price
-TwapShortWindow,getTwap(),34,6,9,0,0,0,0,3,0,1,3,0,0,0,1,0,0,dataset\price_oracle\twap_short_window.sol,1,price_oracle,TWAP window is only 12 seconds (1 block) — a single manipulated trade fully determines the oracle price
-TwapShortWindow,slitherConstructorConstantVariables(),13,1,31,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\price_oracle\twap_short_window.sol,1,price_oracle,TWAP window is only 12 seconds (1 block) — a single manipulated trade fully determines the oracle price
-NoBoundsOracle,constructor(uint256),22,4,5,1,0,0,1,3,0,0,0,3,0,0,1,0,0,dataset\price_oracle\no_bounds_oracle.sol,1,price_oracle,Admin-controlled oracle accepts any price with no min/max sanity bounds — malicious admin can trigger mass liquidations or unlimited borrowing
-NoBoundsOracle,updatePrice(uint256),28,4,6,1,0,0,0,2,0,1,1,2,0,0,1,0,0,dataset\price_oracle\no_bounds_oracle.sol,1,price_oracle,Admin-controlled oracle accepts any price with no min/max sanity bounds — malicious admin can trigger mass liquidations or unlimited borrowing
-NoBoundsOracle,getPrice(),35,2,4,0,0,0,0,2,0,0,1,0,0,0,1,0,0,dataset\price_oracle\no_bounds_oracle.sol,1,price_oracle,Admin-controlled oracle accepts any price with no min/max sanity bounds — malicious admin can trigger mass liquidations or unlimited borrowing
-NoBoundsOracle,getMaxBorrow(uint256),41,2,4,1,0,0,0,2,0,0,1,0,0,0,1,0,0,dataset\price_oracle\no_bounds_oracle.sol,1,price_oracle,Admin-controlled oracle accepts any price with no min/max sanity bounds — malicious admin can trigger mass liquidations or unlimited borrowing
-NoBoundsOracle,slitherConstructorConstantVariables(),13,2,33,0,0,0,0,1,0,0,0,2,0,0,1,0,0,dataset\price_oracle\no_bounds_oracle.sol,1,price_oracle,Admin-controlled oracle accepts any price with no min/max sanity bounds — malicious admin can trigger mass liquidations or unlimited borrowing
-CentralizedOracle,constructor(),20,2,3,0,0,0,1,3,0,0,0,1,0,0,1,0,0,dataset\price_oracle\centralized_oracle.sol,1,price_oracle,"Single-admin oracle with no time-lock, multi-sig, fallback, or deviation check — compromised key enables instant price manipulation"
-CentralizedOracle,"setPrice(address,uint256)",25,5,9,2,0,0,0,2,0,1,1,2,0,0,1,0,0,dataset\price_oracle\centralized_oracle.sol,1,price_oracle,"Single-admin oracle with no time-lock, multi-sig, fallback, or deviation check — compromised key enables instant price manipulation"
-CentralizedOracle,getPrice(address),35,3,5,1,0,0,0,2,0,1,1,0,0,0,1,0,0,dataset\price_oracle\centralized_oracle.sol,1,price_oracle,"Single-admin oracle with no time-lock, multi-sig, fallback, or deviation check — compromised key enables instant price manipulation"
-CentralizedOracle,transferOwnership(address),42,3,4,1,0,0,0,2,0,1,1,1,0,0,1,0,0,dataset\price_oracle\centralized_oracle.sol,1,price_oracle,"Single-admin oracle with no time-lock, multi-sig, fallback, or deviation check — compromised key enables instant price manipulation"
-ReserveManipulation,constructor(address),28,3,4,1,0,0,1,3,1,0,0,2,0,0,1,0,1,dataset\price_oracle\reserve_manipulation.sol,1,price_oracle,Borrow limit derived from AMM getReserves() price — flash loan can inflate collateral token price to borrow unlimited token0
-ReserveManipulation,getToken1Price(),33,5,5,0,0,0,0,3,1,0,1,0,0,0,1,0,0,dataset\price_oracle\reserve_manipulation.sol,1,price_oracle,Borrow limit derived from AMM getReserves() price — flash loan can inflate collateral token price to borrow unlimited token0
-ReserveManipulation,depositToken1(uint256),39,2,3,1,0,0,0,2,0,0,1,1,0,0,1,0,0,dataset\price_oracle\reserve_manipulation.sol,1,price_oracle,Borrow limit derived from AMM getReserves() price — flash loan can inflate collateral token price to borrow unlimited token0
-ReserveManipulation,borrow(uint256),43,6,8,1,0,0,0,2,0,2,3,1,0,0,1,0,0,dataset\price_oracle\reserve_manipulation.sol,1,price_oracle,Borrow limit derived from AMM getReserves() price — flash loan can inflate collateral token price to borrow unlimited token0
-AverageTwoOracles,"constructor(address,address)",23,3,4,2,0,0,1,3,0,0,0,2,0,0,1,0,0,dataset\price_oracle\average_two_oracles.sol,1,price_oracle,Averages two price oracles that both derive from the same pool — correlated feeds provide zero manipulation resistance
-AverageTwoOracles,getPrice(),28,8,15,0,0,0,0,2,2,2,3,0,0,0,1,0,1,dataset\price_oracle\average_two_oracles.sol,1,price_oracle,Averages two price oracles that both derive from the same pool — correlated feeds provide zero manipulation resistance
-AverageTwoOracles,slitherConstructorConstantVariables(),17,1,27,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\price_oracle\average_two_oracles.sol,1,price_oracle,Averages two price oracles that both derive from the same pool — correlated feeds provide zero manipulation resistance
-OracleB,getRate(),20,11,9,0,0,0,0,2,0,2,1,0,0,0,1,0,0,dataset\price_oracle\cascading_oracle.sol,1,price_oracle,Price chain: OracleA multiplies by OracleB which reads from an AMM — single flash loan corrupts OracleB and cascades to OracleA
-OracleB,constructor(address),29,2,1,1,0,0,1,3,0,0,0,1,0,0,1,0,0,dataset\price_oracle\cascading_oracle.sol,1,price_oracle,Price chain: OracleA multiplies by OracleB which reads from an AMM — single flash loan corrupts OracleB and cascades to OracleA
-OracleA,"constructor(address,uint256)",36,3,4,2,0,0,1,3,0,0,0,2,0,0,1,0,0,dataset\price_oracle\cascading_oracle.sol,1,price_oracle,Price chain: OracleA multiplies by OracleB which reads from an AMM — single flash loan corrupts OracleB and cascades to OracleA
-OracleA,getPrice(),41,3,5,0,0,0,0,2,1,0,2,0,0,0,1,0,1,dataset\price_oracle\cascading_oracle.sol,1,price_oracle,Price chain: OracleA multiplies by OracleB which reads from an AMM — single flash loan corrupts OracleB and cascades to OracleA
-FlashloanReentrancy,deposit(),18,3,4,0,0,1,0,2,0,0,2,2,0,1,1,0,0,dataset\flash_loan\flashloan_reentrancy.sol,1,flash_loan,Flash loan issues funds then calls external receiver without reentrancy guard — attacker withdraws during callback before repayment check
-FlashloanReentrancy,withdraw(uint256),23,5,6,1,0,0,0,2,0,1,2,2,0,0,1,0,0,dataset\flash_loan\flashloan_reentrancy.sol,1,flash_loan,Flash loan issues funds then calls external receiver without reentrancy guard — attacker withdraws during callback before repayment check
-FlashloanReentrancy,"flashLoan(uint256,address,bytes)",31,7,13,3,0,0,0,2,0,7,0,0,0,0,1,0,0,dataset\flash_loan\flashloan_reentrancy.sol,1,flash_loan,Flash loan issues funds then calls external receiver without reentrancy guard — attacker withdraws during callback before repayment check
-FlashloanReentrancy,receive(),45,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\flash_loan\flashloan_reentrancy.sol,1,flash_loan,Flash loan issues funds then calls external receiver without reentrancy guard — attacker withdraws during callback before repayment check
-GovernanceFlashloan,constructor(address),29,3,4,1,0,0,1,3,0,0,1,2,0,0,1,0,0,dataset\flash_loan\governance_flashloan.sol,1,flash_loan,"Governance uses live token balance with no timelock — flash-borrowing 51% enables single-transaction proposal creation, voting, and execution"
-GovernanceFlashloan,"transfer(address,uint256)",34,3,4,2,0,0,0,2,0,0,1,1,0,0,1,0,0,dataset\flash_loan\governance_flashloan.sol,1,flash_loan,"Governance uses live token balance with no timelock — flash-borrowing 51% enables single-transaction proposal creation, voting, and execution"
-GovernanceFlashloan,"propose(address,bytes)",39,5,6,2,0,0,0,2,0,0,1,3,0,0,1,0,0,dataset\flash_loan\governance_flashloan.sol,1,flash_loan,"Governance uses live token balance with no timelock — flash-borrowing 51% enables single-transaction proposal creation, voting, and execution"
-GovernanceFlashloan,vote(uint256),47,2,3,1,0,0,0,2,0,0,2,1,0,0,1,0,0,dataset\flash_loan\governance_flashloan.sol,1,flash_loan,"Governance uses live token balance with no timelock — flash-borrowing 51% enables single-transaction proposal creation, voting, and execution"
-GovernanceFlashloan,execute(uint256),52,7,7,1,0,0,0,2,0,3,5,1,0,0,1,0,0,dataset\flash_loan\governance_flashloan.sol,1,flash_loan,"Governance uses live token balance with no timelock — flash-borrowing 51% enables single-transaction proposal creation, voting, and execution"
-GovernanceFlashloan,slitherConstructorVariables(),19,1,41,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\flash_loan\governance_flashloan.sol,1,flash_loan,"Governance uses live token balance with no timelock — flash-borrowing 51% enables single-transaction proposal creation, voting, and execution"
-PriceManipulationFlashloan,"constructor(address,address)",29,3,4,2,0,0,1,3,0,0,0,2,0,0,1,0,0,dataset\flash_loan\price_manipulation_flashloan.sol,1,flash_loan,Flash loan funds AMM dump to inflate collateral token price — attacker borrows more than deposited collateral is actually worth
-PriceManipulationFlashloan,"onFlashLoan(uint256,address,address)",35,5,12,3,0,0,0,2,4,0,2,0,0,0,1,0,1,dataset\flash_loan\price_manipulation_flashloan.sol,1,flash_loan,Flash loan funds AMM dump to inflate collateral token price — attacker borrows more than deposited collateral is actually worth
-FeeBypassFlashloan,deposit(),24,9,9,0,0,1,0,2,0,0,3,4,0,1,1,0,0,dataset\flash_loan\fee_bypass_flashloan.sol,1,flash_loan,Withdrawal fee waived for same-block depositors — circular flash loan (deposit then withdraw) allows fee-free exits
-FeeBypassFlashloan,withdraw(uint256),34,11,13,1,0,0,0,2,0,1,5,3,0,0,1,0,1,dataset\flash_loan\fee_bypass_flashloan.sol,1,flash_loan,Withdrawal fee waived for same-block depositors — circular flash loan (deposit then withdraw) allows fee-free exits
-FeeBypassFlashloan,receive(),48,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\flash_loan\fee_bypass_flashloan.sol,1,flash_loan,Withdrawal fee waived for same-block depositors — circular flash loan (deposit then withdraw) allows fee-free exits
-FeeBypassFlashloan,slitherConstructorConstantVariables(),17,1,33,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\flash_loan\fee_bypass_flashloan.sol,1,flash_loan,Withdrawal fee waived for same-block depositors — circular flash loan (deposit then withdraw) allows fee-free exits
-FakeRepayment,deposit(),19,3,4,0,0,1,0,2,0,0,2,2,0,1,1,0,0,dataset\flash_loan\fake_repayment.sol,1,flash_loan,Flash loan repayment validated against contract balance that can be satisfied by depositing into the same vault — not a real repayment
-FakeRepayment,withdraw(uint256),24,5,6,1,0,0,0,2,0,1,2,2,0,0,1,0,0,dataset\flash_loan\fake_repayment.sol,1,flash_loan,Flash loan repayment validated against contract balance that can be satisfied by depositing into the same vault — not a real repayment
-FakeRepayment,"flashLoan(uint256,address)",31,8,15,2,0,0,0,2,0,7,1,0,0,0,1,0,1,dataset\flash_loan\fake_repayment.sol,1,flash_loan,Flash loan repayment validated against contract balance that can be satisfied by depositing into the same vault — not a real repayment
-FakeRepayment,receive(),47,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\flash_loan\fake_repayment.sol,1,flash_loan,Flash loan repayment validated against contract balance that can be satisfied by depositing into the same vault — not a real repayment
-ShareInflation,deposit(),23,10,13,0,0,1,0,2,0,1,3,3,0,1,1,0,0,dataset\flash_loan\share_inflation.sol,1,flash_loan,"ERC-4626 vault with no virtual offset — first depositor donates large amount to inflate price, making subsequent depositors receive 0 shares"
-ShareInflation,receive(),39,2,3,0,0,1,0,2,0,0,1,1,0,1,1,0,0,dataset\flash_loan\share_inflation.sol,1,flash_loan,"ERC-4626 vault with no virtual offset — first depositor donates large amount to inflate price, making subsequent depositors receive 0 shares"
-ShareInflation,withdraw(),43,8,9,0,0,0,0,2,0,1,3,3,0,0,1,0,0,dataset\flash_loan\share_inflation.sol,1,flash_loan,"ERC-4626 vault with no virtual offset — first depositor donates large amount to inflate price, making subsequent depositors receive 0 shares"
-ShareInflation,slitherConstructorConstantVariables(),16,1,37,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\flash_loan\share_inflation.sol,1,flash_loan,"ERC-4626 vault with no virtual offset — first depositor donates large amount to inflate price, making subsequent depositors receive 0 shares"
-OracleStuffing,constructor(),19,2,3,0,0,0,1,3,0,0,0,1,0,0,1,0,0,dataset\flash_loan\oracle_stuffing.sol,1,flash_loan,TWAP oracle updated on every trade with no rate-limiting — flash loan driven trading loop can dominate cumulative price sum
-OracleStuffing,updatePrice(uint256),24,4,5,1,0,0,0,2,0,0,2,2,0,0,1,0,0,dataset\flash_loan\oracle_stuffing.sol,1,flash_loan,TWAP oracle updated on every trade with no rate-limiting — flash loan driven trading loop can dominate cumulative price sum
-OracleStuffing,"getTwap(uint256,uint256)",36,4,6,2,0,0,0,2,0,1,2,0,0,0,1,0,0,dataset\flash_loan\oracle_stuffing.sol,1,flash_loan,TWAP oracle updated on every trade with no rate-limiting — flash loan driven trading loop can dominate cumulative price sum
-OracleStuffing,slitherConstructorConstantVariables(),14,1,29,0,0,0,0,1,0,0,0,1,0,0,1,0,0,dataset\flash_loan\oracle_stuffing.sol,1,flash_loan,TWAP oracle updated on every trade with no rate-limiting — flash loan driven trading loop can dominate cumulative price sum
-CrossFuncReentrancy,deposit(),18,2,3,0,0,1,0,2,0,0,1,1,0,1,1,0,0,dataset\flash_loan\crossfunc_reentrancy.sol,1,flash_loan,Reentrancy guard only protects withdraw() — cross-function reentrancy allows borrowing against uncleaned deposit balance during withdrawal callback
-CrossFuncReentrancy,withdraw(uint256),22,9,12,1,0,0,0,2,0,3,2,2,0,0,1,0,1,dataset\flash_loan\crossfunc_reentrancy.sol,1,flash_loan,Reentrancy guard only protects withdraw() — cross-function reentrancy allows borrowing against uncleaned deposit balance during withdrawal callback
-CrossFuncReentrancy,borrow(uint256),36,6,8,1,0,0,0,2,0,1,2,1,0,0,1,0,0,dataset\flash_loan\crossfunc_reentrancy.sol,1,flash_loan,Reentrancy guard only protects withdraw() — cross-function reentrancy allows borrowing against uncleaned deposit balance during withdrawal callback
-CrossFuncReentrancy,receive(),45,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\flash_loan\crossfunc_reentrancy.sol,1,flash_loan,Reentrancy guard only protects withdraw() — cross-function reentrancy allows borrowing against uncleaned deposit balance during withdrawal callback
-LiquidityDrain,swap0For1(uint256),22,7,9,1,0,0,0,2,0,2,2,2,0,0,1,0,0,dataset\flash_loan\liquidity_drain.sol,1,flash_loan,"AMM with no swap fee — attacker uses flash loan to perform repeated constant-product swaps, draining one reserve to near-zero without economic cost"
-LiquidityDrain,"addLiquidity(uint256,uint256)",32,9,7,2,0,1,0,2,0,0,4,4,0,0,1,0,0,dataset\flash_loan\liquidity_drain.sol,1,flash_loan,"AMM with no swap fee — attacker uses flash loan to perform repeated constant-product swaps, draining one reserve to near-zero without economic cost"
-LiquidityDrain,removeLiquidity(uint256),40,9,10,1,0,0,0,2,0,1,4,4,0,0,1,0,0,dataset\flash_loan\liquidity_drain.sol,1,flash_loan,"AMM with no swap fee — attacker uses flash loan to perform repeated constant-product swaps, draining one reserve to near-zero without economic cost"
-LiquidityDrain,receive(),51,1,1,0,0,1,0,2,0,0,0,0,0,0,1,0,0,dataset\flash_loan\liquidity_drain.sol,1,flash_loan,"AMM with no swap fee — attacker uses flash loan to perform repeated constant-product swaps, draining one reserve to near-zero without economic cost"
+num_functions,num_external_calls,calls_before_state_update,num_state_vars,has_tx_origin,has_selfdestruct,avg_function_size,num_payable_functions,num_modifiers,num_state_writes,has_delegatecall,has_assembly,uses_tx_origin_in_condition,external_call_before_any_state_update,has_unchecked_external_call,num_user_controlled_inputs_to_state,has_balance_check_before_send,max_call_depth,has_reentrancy_guard_pattern,label,contract_path,source
+3,0,0,2,0,0,6.0,0,0,8,0,0,0,0,0,0,0,13,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeAirdrop.sol,custom
+3,0,0,2,0,0,6.0,0,0,6,0,0,0,0,0,0,0,11,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeBridge.sol,custom
+3,0,0,3,0,0,6.0,0,0,6,0,0,0,0,0,0,0,9,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeDAO.sol,custom
+4,2,0,5,0,0,4.75,1,0,5,0,0,0,0,0,0,0,7,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeEscrow.sol,custom
+3,1,0,3,0,0,5.0,2,0,0,0,0,0,0,0,0,0,8,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeLending.sol,custom
+3,1,0,2,0,0,6.0,1,0,5,0,0,0,0,0,0,0,7,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeMarketplace.sol,custom
+5,1,0,5,0,0,3.8,1,0,6,0,0,0,0,0,0,0,9,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeMultisig.sol,custom
+5,0,0,7,0,0,4.8,0,0,7,0,0,0,0,0,0,0,9,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeNFT.sol,custom
+3,1,0,1,0,0,3.6666666666666665,0,0,0,0,0,0,0,0,0,0,11,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeOracle.sol,custom
+3,1,0,5,0,0,3.6666666666666665,1,0,2,0,0,0,0,0,0,0,10,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafePaymentSplitter.sol,custom
+3,1,0,3,0,0,4.666666666666667,1,0,4,0,0,0,0,0,0,0,8,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeStaking.sol,custom
+5,0,0,6,0,0,4.8,0,0,4,0,0,0,0,0,0,0,9,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeToken.sol,custom
+2,1,0,2,0,0,5.5,1,0,3,0,0,0,0,0,0,0,8,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeVault.sol,custom
+5,1,0,4,0,0,3.4,1,0,2,0,0,0,0,0,0,0,9,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeVesting.sol,custom
+8,1,0,5,0,0,4.125,2,0,5,0,0,0,0,0,0,0,10,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\SafeWETH.sol,custom
+2,0,0,2,0,0,1.5,0,1,1,0,0,0,0,0,0,0,3,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_access_control.sol,custom
+1,1,2,2,0,0,7.0,1,0,2,0,0,0,0,1,0,0,7,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_auction.sol,custom
+2,1,0,1,0,0,3.0,1,0,0,0,0,0,0,1,0,0,4,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_bank.sol,custom
+2,1,0,1,0,0,3.0,1,0,0,0,0,0,0,1,0,0,4,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_bridge.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_bridge_v2.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_crosschain.sol,custom
+0,0,0,1,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_dao.sol,custom
+2,1,0,2,0,0,4.0,0,0,1,0,0,0,0,1,0,0,5,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_dex.sol,custom
+3,0,0,2,0,0,5.0,0,0,1,0,0,0,0,0,0,0,7,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_erc20.sol,custom
+2,1,0,4,0,0,2.5,0,0,1,0,0,0,0,1,0,0,5,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_escrow.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_final.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_flashloan.sol,custom
+3,0,0,2,0,0,1.3333333333333333,0,1,0,0,0,0,0,0,0,0,2,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_governance.sol,custom
+0,0,0,1,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_gov_token.sol,custom
+0,0,0,1,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_insurance.sol,custom
+2,1,0,2,0,0,3.0,1,0,0,0,0,0,0,1,0,0,4,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_lending.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_lend_v2.sol,custom
+1,0,0,1,0,0,3.0,1,0,0,0,0,0,0,0,0,0,3,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_lottery.sol,custom
+1,0,0,0,0,0,1.0,1,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_lottery_v2.sol,custom
+1,0,0,1,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_merkle.sol,custom
+1,0,0,2,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_multisig.sol,custom
+2,0,0,2,0,0,3.0,0,0,3,0,0,0,0,0,0,0,3,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_nft.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_nft_market.sol,custom
+1,0,0,2,0,0,3.0,0,0,2,0,0,0,0,0,0,0,3,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_nft_minter.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_options.sol,custom
+1,0,0,2,0,0,3.0,0,0,2,0,0,0,0,0,0,0,3,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_oracle.sol,custom
+3,1,0,1,0,0,2.3333333333333335,0,2,1,0,0,0,0,1,0,0,4,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_ownable.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_perp.sol,custom
+2,0,0,2,0,0,7.0,1,0,3,1,0,0,0,0,0,0,14,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_proxy.sol,custom
+2,1,0,2,0,0,3.5,1,1,0,0,0,0,0,1,0,0,5,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_reentrancy_guard.sol,custom
+1,1,0,1,0,0,4.0,0,0,2,0,0,0,0,1,0,0,4,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_reward.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_rwa.sol,custom
+0,0,0,1,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_stablecoin.sol,custom
+2,1,0,2,0,0,4.0,1,0,0,0,0,0,0,1,0,0,5,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_staking.sol,custom
+2,1,0,2,0,0,2.0,0,0,0,0,0,0,0,1,0,0,4,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_timelock.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_token_factory.sol,custom
+2,0,0,2,0,0,1.5,0,0,1,0,0,0,0,0,0,0,3,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_upgradeable.sol,custom
+1,0,0,3,0,0,8.0,1,0,2,0,0,0,0,0,0,0,8,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_vault.sol,custom
+3,1,0,2,0,0,2.3333333333333335,0,0,3,0,0,0,0,1,0,0,5,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_vesting.sol,custom
+2,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_yield_farm.sol,custom
+1,0,0,0,0,0,1.0,1,0,0,0,0,0,0,0,0,0,1,0,0,F:\Minor Project\solidity-analyzer\dataset\safe\safe_yield_v2.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\bridge_ordering.sol,custom
+3,1,0,3,0,0,2.6666666666666665,0,0,1,0,0,0,0,1,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\broken_rewards.sol,custom
+2,0,0,4,0,0,4.5,0,0,4,0,0,0,0,0,0,0,6,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\dutch_auction_floor.sol,custom
+3,1,0,3,0,0,1.3333333333333333,2,0,0,0,0,0,0,1,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\escrow_griefing.sol,custom
+2,0,0,1,0,0,2.5,0,0,3,0,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\fee_rounding.sol,custom
+2,1,0,1,0,0,2.5,1,0,0,0,0,0,0,1,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\ghost_collateral.sol,custom
+2,0,0,2,0,0,2.5,0,0,0,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\governance_doublevote.sol,custom
+1,0,0,2,0,0,4.0,0,0,1,0,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\incorrect_amm_math.sol,custom
+1,0,0,2,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\incorrect_liquidation.sol,custom
+1,1,0,1,0,0,4.0,0,0,2,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\incorrect_refund.sol,custom
+1,0,0,2,0,0,3.0,0,0,0,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\invariant_broken.sol,custom
+1,0,0,1,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\missing_invariant.sol,custom
+1,0,0,0,0,0,3.0,0,0,2,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\nft_reveal_frontrun.sol,custom
+1,0,0,1,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\over_minting.sol,custom
+1,1,0,1,0,0,4.0,0,0,0,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\over_withdrawal.sol,custom
+1,0,0,2,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\reward_dilution.sol,custom
+1,1,0,1,0,0,4.0,0,0,1,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\reward_doubleclaim.sol,custom
+2,0,0,1,0,0,1.5,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\timelock_bypass.sol,custom
+2,0,0,2,0,0,3.0,0,0,2,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\vesting_bypass.sol,custom
+1,1,0,1,0,0,4.0,0,0,0,0,0,0,0,0,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnArbitraryCall.sol,custom
+1,1,2,2,0,0,9.0,1,0,2,0,0,0,0,0,0,0,9,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnAuctionDoS.sol,custom
+1,0,0,1,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnBridgeFakeDeposit.sol,custom
+1,0,0,1,0,0,3.0,0,0,0,0,0,0,0,0,0,0,3,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnBurnMissingCheck.sol,custom
+2,1,0,2,0,0,3.5,0,0,2,0,0,0,0,1,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnInitFrontrun.sol,custom
+1,0,0,3,0,0,4.0,0,0,2,0,0,0,0,0,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnRewardMath.sol,custom
+2,0,0,1,0,0,10.0,0,0,6,0,0,0,0,0,0,0,13,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnSigReplay.sol,custom
+1,0,0,2,0,0,8.0,1,0,2,0,0,0,0,0,0,0,8,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnVaultInflation.sol,custom
+1,0,0,2,0,0,6.0,0,0,0,0,0,0,0,0,0,0,6,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnVotingPower.sol,custom
+1,0,0,2,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnWrongAccounting.sol,custom
+2,0,0,1,0,0,1.5,1,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\wrong_phase_logic.sol,custom
+2,1,0,4,0,0,3.5,0,0,2,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\yield_checkpoint.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\average_two_oracles.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\cascading_oracle.sol,custom
+2,0,0,2,0,0,1.5,0,0,1,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\centralized_oracle.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\correlated_feeds.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\decimal_mismatch.sol,custom
+2,0,0,1,0,0,1.5,0,0,2,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\inflated_price.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\manipulated_reserve.sol,custom
+1,0,0,1,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\manipulated_twap.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\multi_source_oracle.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\no_bounds_oracle.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\no_deviation_check.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\no_heartbeat.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\no_heartbeat_check.sol,custom
+2,0,0,1,0,0,1.5,0,0,2,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\price_feed_spoof.sol,custom
+1,0,0,2,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\reserve_manipulation.sol,custom
+1,0,0,2,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\self_referential.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\single_source_oracle.sol,custom
+3,1,0,1,0,0,1.6666666666666667,0,0,0,0,0,0,0,1,0,0,5,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\spot_price_uniswap.sol,custom
+2,1,0,1,0,0,2.0,0,0,0,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\stale_chainlink.sol,custom
+2,0,0,3,0,0,2.5,0,0,4,0,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\twap_short_window.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\unbounded_price.sol,custom
+2,2,0,3,0,0,2.0,0,0,2,0,0,0,0,1,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnAMMReserveManip.sol,custom
+2,1,0,1,0,0,3.0,0,0,0,0,0,0,0,0,0,0,6,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnL2Sequencer.sol,custom
+2,1,0,1,0,0,2.0,0,0,0,0,0,0,0,1,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnMissingPriceValidation.sol,custom
+1,0,0,2,0,0,5.0,0,0,2,0,0,0,0,0,0,0,5,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnOracleManipulationLending.sol,custom
+2,0,0,1,0,0,1.5,0,0,1,0,0,0,0,0,0,0,2,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnPriceScale.sol,custom
+2,1,0,1,0,0,1.5,0,0,1,0,0,0,0,1,0,0,3,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnReadOnlyReentrancy.sol,custom
+2,1,0,1,0,0,4.0,0,0,3,0,0,0,0,1,0,0,8,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnShortTWAP.sol,custom
+2,1,0,1,0,0,2.5,0,0,0,0,0,0,0,1,0,0,5,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnSpotPrice.sol,custom
+2,1,0,1,0,0,2.0,0,0,0,0,0,0,0,1,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnStaleOracle.sol,custom
+2,1,0,1,0,0,2.0,0,0,0,0,0,0,0,1,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnWrongDecimals.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\zero_price_exploit.sol,custom
+1,0,0,1,0,0,2.0,1,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\collateral_inflation.sol,custom
+1,1,1,1,0,0,4.0,0,0,0,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\crossfunc_reentrancy.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\fake_repayment.sol,custom
+2,0,0,0,0,0,1.0,1,0,0,0,0,0,0,0,0,0,1,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\fee_bypass_flashloan.sol,custom
+1,2,0,1,0,0,6.0,0,0,0,0,0,0,0,1,0,1,6,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\flashloan_reentrancy.sol,custom
+1,0,0,2,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\governance_flashloan.sol,custom
+1,0,0,2,0,0,3.0,0,0,0,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\liquidity_drain.sol,custom
+1,0,0,1,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\oracle_stuffing.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\price_manipulation_flashloan.sol,custom
+1,0,0,2,0,0,4.0,1,0,1,0,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\share_inflation.sol,custom
+2,0,0,2,0,0,3.0,0,0,3,0,0,0,0,0,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashArbitrage.sol,custom
+1,1,0,2,0,0,4.0,0,0,2,0,0,0,0,1,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashDividend.sol,custom
+2,0,0,1,0,0,3.0,0,0,2,0,0,0,0,0,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashLiquidation.sol,custom
+1,0,0,1,0,0,3.0,1,0,1,0,0,0,0,0,0,0,3,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashMintExcess.sol,custom
+2,1,0,1,0,0,2.5,0,0,0,0,0,0,0,1,0,0,5,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashOracle.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashPoolDrain.sol,custom
+1,0,0,1,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashReceiver.sol,custom
+1,1,0,1,0,0,4.0,1,0,1,0,0,0,0,1,0,0,4,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashStakingReward.sol,custom
+1,0,0,3,0,0,7.0,0,0,2,0,0,0,0,0,0,0,7,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashVoting.sol,custom
+1,0,0,1,0,0,6.0,1,0,2,0,0,0,0,0,0,0,6,0,1,F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashYieldAggregator.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract01.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract02.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract03.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract04.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract05.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract06.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract07.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract08.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract09.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract10.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract11.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract12.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract13.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract14.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract15.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract16.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract17.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract18.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract19.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract20.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract21.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract22.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract23.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract24.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract25.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract26.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract27.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract28.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract29.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract30.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract31.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract32.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract33.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract34.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract35.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract36.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract37.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract38.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract39.sol,custom
+3,1,0,3,0,0,5.333333333333333,1,1,0,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract40.sol,custom
+1,0,0,2,0,0,10.0,0,0,2,0,0,0,0,0,0,0,10,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewGovernance01.sol,custom
+3,1,0,2,0,0,2.6666666666666665,1,0,0,0,0,0,0,0,0,0,6,0,0,f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewEscrow01.sol,custom
+1,1,1,1,0,0,7.0,0,0,2,0,0,0,0,0,0,0,7,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewRewardDrain.sol,custom
+1,0,0,1,0,0,3.0,0,0,2,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewVestingBypass.sol,custom
+1,0,0,2,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewGovTakeover.sol,custom
+1,1,2,2,0,0,9.0,1,0,2,0,0,0,0,0,0,0,9,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewAuctionSnipe.sol,custom
+1,1,0,0,0,0,5.0,1,0,0,0,0,0,0,1,0,0,5,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewLotteryManip.sol,custom
+1,0,0,1,0,0,3.0,0,0,1,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewSignatureMalleability.sol,custom
+1,0,0,1,0,0,4.0,0,0,1,0,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewFeeEvasion.sol,custom
+1,0,0,2,0,0,4.0,0,0,0,0,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewDoubleSpend.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewAccessControl.sol,custom
+1,0,0,2,0,0,4.0,0,0,2,0,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewUninitializedProxy.sol,custom
+1,0,0,0,0,1,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewSelfDestruct.sol,custom
+1,1,0,0,0,0,4.0,0,0,0,1,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewDelegateCall.sol,custom
+1,0,0,1,0,0,4.0,0,0,2,0,0,0,0,0,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewHashCollision.sol,custom
+1,1,0,0,0,0,2.0,0,0,0,0,0,0,0,1,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewReturnIgnored.sol,custom
+1,1,0,1,1,0,3.0,0,0,0,0,0,1,0,1,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewTxOrigin.sol,custom
+1,0,0,1,0,0,3.0,0,0,2,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewArrayOutofBounds.sol,custom
+1,0,0,1,0,0,6.0,0,0,2,0,0,0,0,0,0,0,6,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewInfiniteLoop.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewStrictEquality.sol,custom
+2,0,0,1,0,0,1.5,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewHiddenState.sol,custom
+2,1,0,0,0,0,1.0,0,0,0,0,0,0,0,1,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewUncheckedTransfer.sol,custom
+2,1,0,1,0,0,2.5,0,0,0,0,0,0,0,1,0,0,5,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleSpot1.sol,custom
+2,1,0,1,0,0,1.0,0,0,0,0,0,0,0,1,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleSpot2.sol,custom
+2,1,0,1,0,0,2.0,0,0,0,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleStale.sol,custom
+2,1,0,1,0,0,2.0,0,0,0,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleDecimals.sol,custom
+2,1,0,1,0,0,2.0,0,0,0,0,0,0,0,1,0,0,4,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleZeroPrice.sol,custom
+2,1,0,1,0,0,4.0,0,0,0,0,0,0,0,0,0,0,8,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleRoundId.sol,custom
+2,1,0,1,0,0,3.0,0,0,0,0,0,0,0,0,0,0,6,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleSequencer.sol,custom
+2,1,0,1,0,0,4.0,0,0,3,0,0,0,0,1,0,0,8,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleTWAPShort.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleTWAPManip.sol,custom
+1,0,0,2,0,0,3.0,0,0,1,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleCentralized.sol,custom
+1,0,0,0,0,0,6.0,0,0,1,0,0,0,0,0,0,0,6,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleFallback.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleInversion.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleCrossRate.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleHeartbeat.sol,custom
+1,0,0,2,0,0,7.0,1,0,2,0,0,0,0,0,0,0,7,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation1.sol,custom
+1,0,0,0,0,0,3.0,0,0,1,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation2.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation3.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation4.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation5.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation6.sol,custom
+1,1,0,1,0,0,6.0,0,0,1,0,0,0,0,0,0,1,6,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashCallback.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashGov.sol,custom
+1,0,0,1,0,0,2.0,0,0,1,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashPrice.sol,custom
+1,0,0,0,0,0,3.0,0,0,1,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashCollateral.sol,custom
+1,1,0,0,0,0,3.0,1,0,1,0,0,0,0,1,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashReward.sol,custom
+2,0,0,1,0,0,1.5,0,0,2,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashDividend.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashArbitrage.sol,custom
+1,0,0,1,0,0,3.0,1,0,1,0,0,0,0,0,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashMint.sol,custom
+1,0,0,0,0,0,2.0,0,0,0,0,0,0,0,0,0,0,2,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashReceiver1.sol,custom
+2,1,0,0,0,0,1.5,0,0,1,0,0,0,0,1,0,0,3,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashReceiver2.sol,custom
+1,0,0,0,0,0,1.0,0,0,0,0,0,0,0,0,0,0,1,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashDrain.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashLiquidity.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashYield.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashAirdrop.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashBuyout.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashFee.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashPeg.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashDebt.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashVault.sol,custom
+0,0,0,0,0,0,0.0,0,0,0,0,0,0,0,0,0,0,0,0,1,f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashSwap.sol,custom

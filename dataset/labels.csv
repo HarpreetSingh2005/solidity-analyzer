@@ -1,31 +1,242 @@
 contract_path,label,category,description
-dataset\business_logic\broken_rewards.sol,1,business_logic,Reward-per-share computed with integer division before multiplication — rewards flood to zero when totalStaked is large
-dataset\business_logic\vesting_bypass.sol,1,business_logic,"Vesting cliff bypass: transferring internal balance detaches it from the vesting schedule, allowing immediate withdrawal"
-dataset\business_logic\fee_rounding.sol,1,business_logic,"Fee calculation uses integer division that rounds to zero for small amounts, enabling free trades via transaction splitting"
-dataset\business_logic\governance_doublevote.sol,1,business_logic,"Governance votes counted from live token balance, not a snapshot — allows double-voting by transferring tokens between accounts"
-dataset\business_logic\escrow_griefing.sol,1,business_logic,Escrow griefed by dust ETH deposits breaking exact-balance invariant; seller can self-release after timeout without arbitration
-dataset\business_logic\dutch_auction_floor.sol,1,business_logic,Dutch auction floor price is stored but never enforced in price calculation; price decays to 0 allowing free bids
-dataset\business_logic\yield_checkpoint.sol,1,business_logic,Yield checkpoint not set on deposit — new depositors retroactively earn all yield accumulated before their entry
-dataset\business_logic\nft_reveal_frontrun.sol,1,business_logic,NFT rarity assigned using blockhash and block.timestamp — validators can selectively include reveal transactions to pick rare traits
-dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check compares raw collateral to debt instead of applying LTV threshold — allows 100% LTV borrowing
-dataset\business_logic\bridge_ordering.sol,1,business_logic,"Bridge mints wrapped tokens before proof verification — if verification reverts post-mint, tokens are irreversibly distributed"
-dataset\price_oracle\spot_price_uniswap.sol,1,price_oracle,Uses Uniswap V2 getReserves() as price oracle — fully manipulatable within a single flash-loan transaction
-dataset\price_oracle\stale_chainlink.sol,1,price_oracle,Chainlink latestRoundData() called without staleness or round-completeness checks — stale prices accepted silently
-dataset\price_oracle\self_referential.sol,1,price_oracle,Protocol uses its own reserve ratio as price oracle — trades against the same pool shift the price used for borrowing limits
-dataset\price_oracle\twap_short_window.sol,1,price_oracle,TWAP window is only 12 seconds (1 block) — a single manipulated trade fully determines the oracle price
-dataset\price_oracle\no_bounds_oracle.sol,1,price_oracle,Admin-controlled oracle accepts any price with no min/max sanity bounds — malicious admin can trigger mass liquidations or unlimited borrowing
-dataset\price_oracle\centralized_oracle.sol,1,price_oracle,"Single-admin oracle with no time-lock, multi-sig, fallback, or deviation check — compromised key enables instant price manipulation"
-dataset\price_oracle\decimal_mismatch.sol,1,price_oracle,Oracle decimals assumed to be 18 but Chainlink BTC/USD has 8 — collateral value inflated by 10^10x enabling unlimited borrowing
-dataset\price_oracle\reserve_manipulation.sol,1,price_oracle,Borrow limit derived from AMM getReserves() price — flash loan can inflate collateral token price to borrow unlimited token0
-dataset\price_oracle\average_two_oracles.sol,1,price_oracle,Averages two price oracles that both derive from the same pool — correlated feeds provide zero manipulation resistance
-dataset\price_oracle\cascading_oracle.sol,1,price_oracle,Price chain: OracleA multiplies by OracleB which reads from an AMM — single flash loan corrupts OracleB and cascades to OracleA
-dataset\flash_loan\flashloan_reentrancy.sol,1,flash_loan,Flash loan issues funds then calls external receiver without reentrancy guard — attacker withdraws during callback before repayment check
-dataset\flash_loan\governance_flashloan.sol,1,flash_loan,"Governance uses live token balance with no timelock — flash-borrowing 51% enables single-transaction proposal creation, voting, and execution"
-dataset\flash_loan\price_manipulation_flashloan.sol,1,flash_loan,Flash loan funds AMM dump to inflate collateral token price — attacker borrows more than deposited collateral is actually worth
-dataset\flash_loan\collateral_inflation.sol,1,flash_loan,LP token value calculated from live pool reserves — flash-depositing ETH inflates LP token price used for borrow limits
-dataset\flash_loan\fee_bypass_flashloan.sol,1,flash_loan,Withdrawal fee waived for same-block depositors — circular flash loan (deposit then withdraw) allows fee-free exits
-dataset\flash_loan\fake_repayment.sol,1,flash_loan,Flash loan repayment validated against contract balance that can be satisfied by depositing into the same vault — not a real repayment
-dataset\flash_loan\share_inflation.sol,1,flash_loan,"ERC-4626 vault with no virtual offset — first depositor donates large amount to inflate price, making subsequent depositors receive 0 shares"
-dataset\flash_loan\oracle_stuffing.sol,1,flash_loan,TWAP oracle updated on every trade with no rate-limiting — flash loan driven trading loop can dominate cumulative price sum
-dataset\flash_loan\crossfunc_reentrancy.sol,1,flash_loan,Reentrancy guard only protects withdraw() — cross-function reentrancy allows borrowing against uncleaned deposit balance during withdrawal callback
-dataset\flash_loan\liquidity_drain.sol,1,flash_loan,"AMM with no swap fee — attacker uses flash loan to perform repeated constant-product swaps, draining one reserve to near-zero without economic cost"
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeAirdrop.sol,0,safe,Generated safe contract: SafeAirdrop.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeBridge.sol,0,safe,Generated safe contract: SafeBridge.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeDAO.sol,0,safe,Generated safe contract: SafeDAO.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeEscrow.sol,0,safe,Generated safe contract: SafeEscrow.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeLending.sol,0,safe,Generated safe contract: SafeLending.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeMarketplace.sol,0,safe,Generated safe contract: SafeMarketplace.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeMultisig.sol,0,safe,Generated safe contract: SafeMultisig.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeNFT.sol,0,safe,Generated safe contract: SafeNFT.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeOracle.sol,0,safe,Generated safe contract: SafeOracle.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafePaymentSplitter.sol,0,safe,Generated safe contract: SafePaymentSplitter.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeStaking.sol,0,safe,Generated safe contract: SafeStaking.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeToken.sol,0,safe,Generated safe contract: SafeToken.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeVault.sol,0,safe,Generated safe contract: SafeVault.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeVesting.sol,0,safe,Generated safe contract: SafeVesting.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\SafeWETH.sol,0,safe,Generated safe contract: SafeWETH.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_access_control.sol,0,safe,Legacy or missing contract: safe_access_control.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_auction.sol,0,safe,Legacy or missing contract: safe_auction.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_bank.sol,0,safe,Legacy or missing contract: safe_bank.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_bridge.sol,0,safe,Legacy or missing contract: safe_bridge.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_bridge_v2.sol,0,safe,Legacy or missing contract: safe_bridge_v2.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_crosschain.sol,0,safe,Legacy or missing contract: safe_crosschain.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_dao.sol,0,safe,Legacy or missing contract: safe_dao.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_dex.sol,0,safe,Legacy or missing contract: safe_dex.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_erc20.sol,0,safe,Legacy or missing contract: safe_erc20.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_escrow.sol,0,safe,Legacy or missing contract: safe_escrow.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_final.sol,0,safe,Legacy or missing contract: safe_final.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_flashloan.sol,0,safe,Legacy or missing contract: safe_flashloan.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_governance.sol,0,safe,Legacy or missing contract: safe_governance.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_gov_token.sol,0,safe,Legacy or missing contract: safe_gov_token.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_insurance.sol,0,safe,Legacy or missing contract: safe_insurance.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_lending.sol,0,safe,Legacy or missing contract: safe_lending.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_lend_v2.sol,0,safe,Legacy or missing contract: safe_lend_v2.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_lottery.sol,0,safe,Legacy or missing contract: safe_lottery.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_lottery_v2.sol,0,safe,Legacy or missing contract: safe_lottery_v2.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_merkle.sol,0,safe,Legacy or missing contract: safe_merkle.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_multisig.sol,0,safe,Legacy or missing contract: safe_multisig.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_nft.sol,0,safe,Legacy or missing contract: safe_nft.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_nft_market.sol,0,safe,Legacy or missing contract: safe_nft_market.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_nft_minter.sol,0,safe,Legacy or missing contract: safe_nft_minter.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_options.sol,0,safe,Legacy or missing contract: safe_options.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_oracle.sol,0,safe,Legacy or missing contract: safe_oracle.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_ownable.sol,0,safe,Legacy or missing contract: safe_ownable.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_perp.sol,0,safe,Legacy or missing contract: safe_perp.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_proxy.sol,0,safe,Legacy or missing contract: safe_proxy.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_reentrancy_guard.sol,0,safe,Legacy or missing contract: safe_reentrancy_guard.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_reward.sol,0,safe,Legacy or missing contract: safe_reward.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_rwa.sol,0,safe,Legacy or missing contract: safe_rwa.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_stablecoin.sol,0,safe,Legacy or missing contract: safe_stablecoin.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_staking.sol,0,safe,Legacy or missing contract: safe_staking.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_timelock.sol,0,safe,Legacy or missing contract: safe_timelock.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_token_factory.sol,0,safe,Legacy or missing contract: safe_token_factory.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_upgradeable.sol,0,safe,Legacy or missing contract: safe_upgradeable.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_vault.sol,0,safe,Legacy or missing contract: safe_vault.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_vesting.sol,0,safe,Legacy or missing contract: safe_vesting.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_yield_farm.sol,0,safe,Legacy or missing contract: safe_yield_farm.sol
+F:\Minor Project\solidity-analyzer\dataset\safe\safe_yield_v2.sol,0,safe,Legacy or missing contract: safe_yield_v2.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\bridge_ordering.sol,1,business_logic,Bridge mints before verifying proof → free token minting
+f:\Minor Project\solidity-analyzer\dataset\business_logic\broken_rewards.sol,1,business_logic,Reward rounding loss due to integer division before multiplication
+f:\Minor Project\solidity-analyzer\dataset\business_logic\dutch_auction_floor.sol,1,business_logic,Dutch auction floor price declared but never enforced
+f:\Minor Project\solidity-analyzer\dataset\business_logic\escrow_griefing.sol,1,business_logic,Escrow griefed by dust ETH deposits breaking exact-balance invariant
+f:\Minor Project\solidity-analyzer\dataset\business_logic\fee_rounding.sol,1,business_logic,Fee calculation rounds to zero for small trades
+f:\Minor Project\solidity-analyzer\dataset\business_logic\ghost_collateral.sol,1,business_logic,Ghost collateral allows borrowing against already withdrawn assets
+f:\Minor Project\solidity-analyzer\dataset\business_logic\governance_doublevote.sol,1,business_logic,Governance double-vote via token transfer (no snapshot)
+f:\Minor Project\solidity-analyzer\dataset\business_logic\incorrect_amm_math.sol,1,business_logic,Incorrect AMM constant product math leading to price manipulation
+f:\Minor Project\solidity-analyzer\dataset\business_logic\incorrect_liquidation.sol,1,business_logic,Liquidation health check allows 100% LTV instead of 75%
+f:\Minor Project\solidity-analyzer\dataset\business_logic\incorrect_refund.sol,1,business_logic,Incorrect refund logic allowing double refund
+f:\Minor Project\solidity-analyzer\dataset\business_logic\invariant_broken.sol,1,business_logic,Broken economic invariant between totalSupply and sum of balances
+f:\Minor Project\solidity-analyzer\dataset\business_logic\missing_invariant.sol,1,business_logic,Missing economic invariant check after state change
+f:\Minor Project\solidity-analyzer\dataset\business_logic\nft_reveal_frontrun.sol,1,business_logic,NFT reveal using predictable blockhash → front-running
+f:\Minor Project\solidity-analyzer\dataset\business_logic\over_minting.sol,1,business_logic,Unlimited minting due to missing supply cap and access control
+f:\Minor Project\solidity-analyzer\dataset\business_logic\over_withdrawal.sol,1,business_logic,Over-withdrawal due to incorrect balance check
+f:\Minor Project\solidity-analyzer\dataset\business_logic\reward_dilution.sol,1,business_logic,Reward dilution due to missing checkpoint on new stake
+f:\Minor Project\solidity-analyzer\dataset\business_logic\reward_doubleclaim.sol,1,business_logic,Missing state reset after claim → double claim possible
+f:\Minor Project\solidity-analyzer\dataset\business_logic\timelock_bypass.sol,1,business_logic,Timelock bypass via flash loan timing manipulation
+f:\Minor Project\solidity-analyzer\dataset\business_logic\vesting_bypass.sol,1,business_logic,Vesting cliff bypass via token transfer
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnArbitraryCall.sol,1,business_logic,Generated vulnerable contract: VulnArbitraryCall.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnAuctionDoS.sol,1,business_logic,Generated vulnerable contract: VulnAuctionDoS.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnBridgeFakeDeposit.sol,1,business_logic,Generated vulnerable contract: VulnBridgeFakeDeposit.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnBurnMissingCheck.sol,1,business_logic,Generated vulnerable contract: VulnBurnMissingCheck.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnInitFrontrun.sol,1,business_logic,Generated vulnerable contract: VulnInitFrontrun.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnRewardMath.sol,1,business_logic,Generated vulnerable contract: VulnRewardMath.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnSigReplay.sol,1,business_logic,Generated vulnerable contract: VulnSigReplay.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnVaultInflation.sol,1,business_logic,Generated vulnerable contract: VulnVaultInflation.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnVotingPower.sol,1,business_logic,Generated vulnerable contract: VulnVotingPower.sol
+F:\Minor Project\solidity-analyzer\dataset\business_logic\VulnWrongAccounting.sol,1,business_logic,Generated vulnerable contract: VulnWrongAccounting.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\wrong_phase_logic.sol,1,business_logic,Incorrect sale phase logic allowing early purchases
+f:\Minor Project\solidity-analyzer\dataset\business_logic\yield_checkpoint.sol,1,business_logic,Missing yield checkpoint on deposit → retroactive reward capture
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\average_two_oracles.sol,1,price_oracle,Average of two correlated oracles — no real diversification
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\cascading_oracle.sol,1,price_oracle,Cascading oracle dependency — single point failure propagates
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\centralized_oracle.sol,1,price_oracle,Fully centralized oracle controlled by single admin
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\correlated_feeds.sol,1,price_oracle,Average of correlated price feeds provides false security
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\decimal_mismatch.sol,1,price_oracle,Decimal mismatch between oracle and internal accounting
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\inflated_price.sol,1,price_oracle,Oracle price can be inflated causing over-borrowing
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\manipulated_reserve.sol,1,price_oracle,Reserve-based price manipulatable by attacker
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\manipulated_twap.sol,1,price_oracle,TWAP cumulative price manipulatable by repeated updates
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\multi_source_oracle.sol,1,price_oracle,Multi-source oracle with correlated feeds
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\no_bounds_oracle.sol,1,price_oracle,Oracle price with no sanity bounds — can be set to 0 or max uint256
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\no_deviation_check.sol,1,price_oracle,No deviation check between price updates
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\no_heartbeat.sol,1,price_oracle,No heartbeat check on oracle updates
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\no_heartbeat_check.sol,1,price_oracle,No heartbeat check on oracle updates — stale data accepted
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\price_feed_spoof.sol,1,price_oracle,Price feed can be spoofed by anyone
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\reserve_manipulation.sol,1,price_oracle,Price derived from live reserves — flash loan manipulatable
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\self_referential.sol,1,price_oracle,Self-referential price using own reserves — easily manipulatable
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\single_source_oracle.sol,1,price_oracle,Single source oracle with no redundancy
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\spot_price_uniswap.sol,1,price_oracle,Uses Uniswap spot price — manipulatable by flash loan
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\stale_chainlink.sol,1,price_oracle,Chainlink price used without staleness check
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\twap_short_window.sol,1,price_oracle,TWAP window too short (12 seconds) — single block manipulation possible
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\unbounded_price.sol,1,price_oracle,Unbounded price update allowing extreme values
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnAMMReserveManip.sol,1,price_oracle,Generated vulnerable contract: VulnAMMReserveManip.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnL2Sequencer.sol,1,price_oracle,Generated vulnerable contract: VulnL2Sequencer.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnMissingPriceValidation.sol,1,price_oracle,Generated vulnerable contract: VulnMissingPriceValidation.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnOracleManipulationLending.sol,1,price_oracle,Generated vulnerable contract: VulnOracleManipulationLending.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnPriceScale.sol,1,price_oracle,Generated vulnerable contract: VulnPriceScale.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnReadOnlyReentrancy.sol,1,price_oracle,Generated vulnerable contract: VulnReadOnlyReentrancy.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnShortTWAP.sol,1,price_oracle,Generated vulnerable contract: VulnShortTWAP.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnSpotPrice.sol,1,price_oracle,Generated vulnerable contract: VulnSpotPrice.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnStaleOracle.sol,1,price_oracle,Generated vulnerable contract: VulnStaleOracle.sol
+F:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnWrongDecimals.sol,1,price_oracle,Generated vulnerable contract: VulnWrongDecimals.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\zero_price_exploit.sol,1,price_oracle,Oracle price can be set to zero causing mass liquidations
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\collateral_inflation.sol,1,flash_loan,Collateral inflation via flash loan deposit
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\crossfunc_reentrancy.sol,1,flash_loan,Cross-function reentrancy during flash loan callback
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\fake_repayment.sol,1,flash_loan,Fake repayment using internal accounting trick
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\fee_bypass_flashloan.sol,1,flash_loan,Fee bypass using flash loan circular deposit/withdraw
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\flashloan_reentrancy.sol,1,flash_loan,Flash loan callback allows reentrancy into withdraw
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\governance_flashloan.sol,1,flash_loan,Governance attack via flash-loaned voting power
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\liquidity_drain.sol,1,flash_loan,AMM liquidity drain via flash loan with no swap fee
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\oracle_stuffing.sol,1,flash_loan,TWAP oracle stuffing via high-volume flash loan trades
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\price_manipulation_flashloan.sol,1,flash_loan,Flash loan used to manipulate price before borrowing
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\share_inflation.sol,1,flash_loan,ERC-4626 share inflation via first depositor attack
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashArbitrage.sol,1,flash_loan,Generated vulnerable contract: VulnFlashArbitrage.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashDividend.sol,1,flash_loan,Generated vulnerable contract: VulnFlashDividend.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashLiquidation.sol,1,flash_loan,Generated vulnerable contract: VulnFlashLiquidation.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashMintExcess.sol,1,flash_loan,Generated vulnerable contract: VulnFlashMintExcess.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashOracle.sol,1,flash_loan,Generated vulnerable contract: VulnFlashOracle.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashPoolDrain.sol,1,flash_loan,Generated vulnerable contract: VulnFlashPoolDrain.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashReceiver.sol,1,flash_loan,Generated vulnerable contract: VulnFlashReceiver.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashStakingReward.sol,1,flash_loan,Generated vulnerable contract: VulnFlashStakingReward.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashVoting.sol,1,flash_loan,Generated vulnerable contract: VulnFlashVoting.sol
+F:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnFlashYieldAggregator.sol,1,flash_loan,Generated vulnerable contract: VulnFlashYieldAggregator.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract01.sol,0,safe,Generated safe contract: SafeNewContract01.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract02.sol,0,safe,Generated safe contract: SafeNewContract02.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract03.sol,0,safe,Generated safe contract: SafeNewContract03.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract04.sol,0,safe,Generated safe contract: SafeNewContract04.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract05.sol,0,safe,Generated safe contract: SafeNewContract05.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract06.sol,0,safe,Generated safe contract: SafeNewContract06.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract07.sol,0,safe,Generated safe contract: SafeNewContract07.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract08.sol,0,safe,Generated safe contract: SafeNewContract08.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract09.sol,0,safe,Generated safe contract: SafeNewContract09.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract10.sol,0,safe,Generated safe contract: SafeNewContract10.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract11.sol,0,safe,Generated safe contract: SafeNewContract11.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract12.sol,0,safe,Generated safe contract: SafeNewContract12.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract13.sol,0,safe,Generated safe contract: SafeNewContract13.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract14.sol,0,safe,Generated safe contract: SafeNewContract14.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract15.sol,0,safe,Generated safe contract: SafeNewContract15.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract16.sol,0,safe,Generated safe contract: SafeNewContract16.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract17.sol,0,safe,Generated safe contract: SafeNewContract17.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract18.sol,0,safe,Generated safe contract: SafeNewContract18.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract19.sol,0,safe,Generated safe contract: SafeNewContract19.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract20.sol,0,safe,Generated safe contract: SafeNewContract20.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract21.sol,0,safe,Generated safe contract: SafeNewContract21.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract22.sol,0,safe,Generated safe contract: SafeNewContract22.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract23.sol,0,safe,Generated safe contract: SafeNewContract23.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract24.sol,0,safe,Generated safe contract: SafeNewContract24.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract25.sol,0,safe,Generated safe contract: SafeNewContract25.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract26.sol,0,safe,Generated safe contract: SafeNewContract26.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract27.sol,0,safe,Generated safe contract: SafeNewContract27.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract28.sol,0,safe,Generated safe contract: SafeNewContract28.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract29.sol,0,safe,Generated safe contract: SafeNewContract29.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract30.sol,0,safe,Generated safe contract: SafeNewContract30.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract31.sol,0,safe,Generated safe contract: SafeNewContract31.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract32.sol,0,safe,Generated safe contract: SafeNewContract32.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract33.sol,0,safe,Generated safe contract: SafeNewContract33.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract34.sol,0,safe,Generated safe contract: SafeNewContract34.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract35.sol,0,safe,Generated safe contract: SafeNewContract35.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract36.sol,0,safe,Generated safe contract: SafeNewContract36.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract37.sol,0,safe,Generated safe contract: SafeNewContract37.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract38.sol,0,safe,Generated safe contract: SafeNewContract38.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract39.sol,0,safe,Generated safe contract: SafeNewContract39.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewContract40.sol,0,safe,Generated safe contract: SafeNewContract40.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewGovernance01.sol,0,safe,Generated safe contract: SafeNewGovernance01.sol
+f:\Minor Project\solidity-analyzer\dataset\safe\SafeNewEscrow01.sol,0,safe,Generated safe contract: SafeNewEscrow01.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewRewardDrain.sol,1,business_logic,Generated vulnerable contract: VulnNewRewardDrain.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewVestingBypass.sol,1,business_logic,Generated vulnerable contract: VulnNewVestingBypass.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewGovTakeover.sol,1,business_logic,Generated vulnerable contract: VulnNewGovTakeover.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewAuctionSnipe.sol,1,business_logic,Generated vulnerable contract: VulnNewAuctionSnipe.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewLotteryManip.sol,1,business_logic,Generated vulnerable contract: VulnNewLotteryManip.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewSignatureMalleability.sol,1,business_logic,Generated vulnerable contract: VulnNewSignatureMalleability.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewFeeEvasion.sol,1,business_logic,Generated vulnerable contract: VulnNewFeeEvasion.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewDoubleSpend.sol,1,business_logic,Generated vulnerable contract: VulnNewDoubleSpend.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewAccessControl.sol,1,business_logic,Generated vulnerable contract: VulnNewAccessControl.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewUninitializedProxy.sol,1,business_logic,Generated vulnerable contract: VulnNewUninitializedProxy.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewSelfDestruct.sol,1,business_logic,Generated vulnerable contract: VulnNewSelfDestruct.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewDelegateCall.sol,1,business_logic,Generated vulnerable contract: VulnNewDelegateCall.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewHashCollision.sol,1,business_logic,Generated vulnerable contract: VulnNewHashCollision.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewReturnIgnored.sol,1,business_logic,Generated vulnerable contract: VulnNewReturnIgnored.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewTxOrigin.sol,1,business_logic,Generated vulnerable contract: VulnNewTxOrigin.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewArrayOutofBounds.sol,1,business_logic,Generated vulnerable contract: VulnNewArrayOutofBounds.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewInfiniteLoop.sol,1,business_logic,Generated vulnerable contract: VulnNewInfiniteLoop.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewStrictEquality.sol,1,business_logic,Generated vulnerable contract: VulnNewStrictEquality.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewHiddenState.sol,1,business_logic,Generated vulnerable contract: VulnNewHiddenState.sol
+f:\Minor Project\solidity-analyzer\dataset\business_logic\VulnNewUncheckedTransfer.sol,1,business_logic,Generated vulnerable contract: VulnNewUncheckedTransfer.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleSpot1.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleSpot1.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleSpot2.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleSpot2.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleStale.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleStale.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleDecimals.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleDecimals.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleZeroPrice.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleZeroPrice.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleRoundId.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleRoundId.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleSequencer.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleSequencer.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleTWAPShort.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleTWAPShort.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleTWAPManip.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleTWAPManip.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleCentralized.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleCentralized.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleFallback.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleFallback.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleInversion.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleInversion.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleCrossRate.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleCrossRate.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleHeartbeat.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleHeartbeat.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation1.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleManipulation1.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation2.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleManipulation2.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation3.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleManipulation3.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation4.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleManipulation4.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation5.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleManipulation5.sol
+f:\Minor Project\solidity-analyzer\dataset\price_oracle\VulnNewOracleManipulation6.sol,1,price_oracle,Generated vulnerable contract: VulnNewOracleManipulation6.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashCallback.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashCallback.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashGov.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashGov.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashPrice.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashPrice.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashCollateral.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashCollateral.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashReward.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashReward.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashDividend.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashDividend.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashArbitrage.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashArbitrage.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashMint.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashMint.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashReceiver1.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashReceiver1.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashReceiver2.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashReceiver2.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashDrain.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashDrain.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashLiquidity.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashLiquidity.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashYield.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashYield.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashAirdrop.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashAirdrop.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashBuyout.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashBuyout.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashFee.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashFee.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashPeg.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashPeg.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashDebt.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashDebt.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashVault.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashVault.sol
+f:\Minor Project\solidity-analyzer\dataset\flash_loan\VulnNewFlashSwap.sol,1,flash_loan,Generated vulnerable contract: VulnNewFlashSwap.sol
