@@ -1,65 +1,169 @@
 # SESA — Solidity Explainable Static Analyzer
 
-SESA is a professional, hybrid vulnerability analyzer designed for research-grade smart contract auditing. It combines the speed and determinism of Slither-based static rules with a powerful Phase 2 Machine Learning layer tailored for semantic DeFi vulnerabilities.
+**A hybrid smart contract vulnerability analyzer combining rule-based static detection with machine learning for semantic and business logic flaws.**
 
-## Architecture
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Slither](https://img.shields.io/badge/Slither-Static_Analysis-orange)
+![RandomForest](https://img.shields.io/badge/ML-RandomForest-green)
+![Accuracy](https://img.shields.io/badge/Accuracy-91.8%25-brightgreen)
 
-The project is structured into two complementary phases to ensure both high-precision static detection and robust semantic analysis.
+---
 
-*   **Phase 1 (Static Analysis)**: High-precision Slither detectors in `detectors/` using centralized parsing. It guarantees exact line numbers, clear explanations, and actionable suggested fixes for common vulnerabilities.
-*   **Phase 2 (Machine Learning)**: A semantic layer targeting complex DeFi vulnerabilities like Price Oracle manipulation, Flash Loan attacks, and Business Logic flaws.
+## 📋 Overview
 
-## Supported Static Detectors
+SESA is a **hybrid analyzer** for Solidity smart contracts that combines:
 
-| Vulnerability | Category | Severity | Description |
-| :--- | :--- | :--- | :--- |
-| **Reentrancy** | Access Control / State | High | Flags external calls made before updating state variables (CEI Violation). |
-| **Missing Access Control** | Authorization | Critical | Flags modification of privileged variables (e.g., owner) without an access guard. |
-| **tx.origin Phishing** | Authentication | High | Detects vulnerable use of `tx.origin` for authorization. |
-| **Unprotected selfdestruct** | Access Control | Critical | Flags unprotected calls to `selfdestruct` / `suicide`. |
-| **Unchecked External Call** | Error Handling | Medium | Detects low-level calls whose boolean return value is not captured. |
-| **Shadowed Variable** | Logic Error | Medium | Flags state variables in a child contract that shadow variables in a parent. |
+- **Phase 1**: High-precision **static detectors** powered by Slither
+- **Phase 2**: **Machine Learning (RandomForest)** for complex semantic/business logic vulnerabilities (reward logic flaws, price oracle manipulation, flash loan attacks, etc.)
 
-## Installation
+It provides:
+- Clear explanations
+- Exact line numbers
+- Suggested fixes
+- Professional **PDF reports**
+
+---
+
+## ✨ Key Features
+
+- 10+ static detectors:
+  - Reentrancy
+  - Access Control
+  - `tx.origin`
+  - Selfdestruct
+  - Unchecked Calls
+  - Timestamp Dependence
+  - Delegatecall
+  - Front-running
+- ML-based detection for semantic/business logic issues
+- Hybrid analysis mode (`--mode hybrid`)
+- Explainable results with human-readable explanations
+- Consolidated PDF report generation
+- Clean, modular, and extensible architecture
+- Easy testing suite
+
+---
+
+## 🚀 Quick Start
+
+### Installation
 
 ```bash
-# 1. Install Python dependencies
-pip install -r requirements.txt
+git clone https://github.com/HarpreetSingh2005/solidity-analyzer.git
+cd solidity-analyzer
 
-# 2. Install and use Solc 0.8.0
-solc-select install 0.8.0
-solc-select use 0.8.0
+pip install slither-analyzer fpdf2 pandas scikit-learn joblib matplotlib seaborn
 ```
 
-## Usage
+---
 
-You can run SESA in either `static` mode (Slither only) or `hybrid` mode (Static + ML).
+### Usage
 
+#### Analyze a single contract (recommended):
 ```bash
-# Run in Static Mode (Default)
-python main.py path/to/contract.sol --mode static
-
-# Run in Hybrid Mode
-python main.py path/to/contract.sol --mode hybrid
+python main.py tests/Reentrancy.sol --mode hybrid
 ```
 
-## Dataset Generation (Phase 2)
-
-To generate the evaluation dataset containing 30 vulnerable contracts (Business Logic, Price Oracle, Flash Loan):
-
+#### Analyze in static-only mode:
 ```bash
-python scripts/create_dataset.py
+python main.py dataset/business_logic/broken_rewards.sol
 ```
-This will populate the `dataset/` directory and generate a `labels.csv` file for ML training.
 
-## Project Structure
+#### Run full test suite + generate PDF report:
+```bash
+python run_all_tests.py
+```
 
-*   `core/`: Orchestrator and reporting logic (`analyzer.py`).
-*   `detectors/`: Standardized static vulnerability plugins.
-*   `dataset/`: Generated dataset contracts and labels for ML.
-*   `ml/`: Machine Learning layer for semantic analysis.
-*   `scripts/`: Utilities for dataset generation (`create_dataset.py`).
+#### Test any individual contract:
+```bash
+python test_single_contract.py dataset/business_logic/broken_rewards.sol --mode hybrid
+```
 
-## Contribution
+---
 
-Contributions are welcome! If you're adding a new static detector, ensure it follows the standardized output schema (vulnerability, contract, function, line, severity, explanation, suggested_fix) and uses type annotations.
+## 📊 Project Results
+
+- **Dataset**: 241 smart contracts  
+  - 143 vulnerable  
+  - 98 safe  
+
+- **Best Model**: RandomForest  
+- **Accuracy**: 91.80%  
+- **F1-Score**: 0.9333  
+
+The hybrid system successfully detected **8 issues across 10 diverse test contracts** with very low false positives.  
+
+(Screenshots: model comparison, dataset distribution, and feature importance are available in the repository.)
+
+---
+
+## 🏗️ Project Structure
+
+```
+solidity-analyzer/
+├── core/                  # Core analyzer + PDF generator
+├── detectors/             # Static detectors (Slither-based)
+├── ml/                    # Machine Learning module
+│   ├── feature_extractor.py
+│   ├── model.py
+│   └── ml_analyzer.py
+├── dataset/               # Training data (business_logic, price_oracle, flash_loan, safe)
+├── tests/                 # Test contracts
+├── reports/               # Generated JSON + PDF reports
+├── scripts/               # Utility scripts
+├── main.py                # Main CLI
+├── run_all_tests.py       # Batch testing + PDF
+└── test_single_contract.py
+```
+
+---
+
+## 🔬 How It Works
+
+- **Static Phase** → Runs multiple high-precision Slither detectors  
+- **ML Phase** → Extracts 19 semantic features and runs RandomForest model  
+- **Hybrid Reporting** → Combines both with clear explanations and fixes  
+
+---
+
+## 📸 Screenshots
+
+- Model Performance Comparison  
+- Dataset Distribution (241 contracts)  
+- Feature Importance (RandomForest)  
+- Sample PDF Report  
+
+---
+
+## 📝 Limitations
+
+- ML component is probabilistic and may produce occasional false positives on complex contracts  
+- Very advanced business logic vulnerabilities still require manual review  
+- Trained on a curated dataset of 241 contracts  
+
+---
+
+## 🔮 Future Work
+
+- Add deeper data-flow and taint analysis features  
+- Integrate symbolic execution / formal verification  
+- Develop a web interface or VS Code extension  
+- Support for newer Solidity versions and upgradeable contracts  
+
+---
+
+## 📄 License
+
+MIT License  
+
+---
+
+## 🙌 Acknowledgments
+
+- Built as a Minor Project (2026)  
+- Uses Slither by Trail of Bits  
+- Dataset inspired by SmartBugs Curated  
+
+---
+
+**Made with ❤️ for smart contract security** 🚀
