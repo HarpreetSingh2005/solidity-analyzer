@@ -1,4 +1,4 @@
-# SESA — Solidity Explainable Hybrid Analyzer
+# SEHA — Solidity Explainable Hybrid Analyzer
 
 **A hybrid smart contract vulnerability analyzer combining rule-based static detection with machine learning for semantic and business logic flaws.**
 
