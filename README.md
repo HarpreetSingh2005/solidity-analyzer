@@ -1,4 +1,4 @@
-# SESA — Solidity Explainable Static Analyzer
+# SESA — Solidity Explainable Hybrid Analyzer
 
 **A hybrid smart contract vulnerability analyzer combining rule-based static detection with machine learning for semantic and business logic flaws.**
 
@@ -11,7 +11,7 @@
 
 ## 📋 Overview
 
-SESA is a **hybrid analyzer** for Solidity smart contracts that combines:
+SEHA is a **hybrid analyzer** for Solidity smart contracts that combines:
 
 - **Phase 1**: High-precision **static detectors** powered by Slither
 - **Phase 2**: **Machine Learning (RandomForest)** for complex semantic/business logic vulnerabilities (reward logic flaws, price oracle manipulation, flash loan attacks, etc.)
