@@ -18,7 +18,8 @@ def analyze_with_ml(slither):
                 "severity": "Medium",
                 "explanation": f"RandomForest ML model detected possible complex vulnerability with {confidence:.1%} confidence.",
                 "suggested_fix": "Manually review business logic, reward calculations, price oracles, flash loan protections, and economic invariants.",
-                "ml_confidence": round(confidence, 4)
+                "ml_confidence": round(confidence, 4),
+                "is_ml_finding": True
             }]
         else:
             print(f"[ML] Skipped (confidence too low)")

@@ -80,7 +80,7 @@ def generate_full_pdf_report(reports_dir: str = "reports", output_filename: str 
         f"{total_contracts} smart contract(s). In total, {total_issues} potential vulnerabilities "
         f"were identified across {vulnerable_contracts} contract(s)."
     )
-    pdf.multi_cell(eff_width, 8, summary_text)
+    pdf.multi_cell(eff_width, 8, summary_text, align='L')
     pdf.ln(10)
 
     # ── Section 2: Findings Overview Table ────────────────────────────────────
@@ -164,14 +164,19 @@ def generate_full_pdf_report(reports_dir: str = "reports", output_filename: str 
                     pdf.set_font('Helvetica', 'B', 9)
                     _cell(pdf, eff_width, 5, '  Explanation:')
                     pdf.set_font('Helvetica', '', 9)
-                    pdf.set_x(pdf.l_margin + 4)
-                    pdf.multi_cell(eff_width - 4, 5, expl.strip(), align='L')
+                    curr_l_margin = pdf.l_margin
+                    pdf.set_left_margin(curr_l_margin + 4)
+                    pdf.multi_cell(eff_width - 4, 5, expl.strip(), align='L', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                    pdf.set_left_margin(curr_l_margin)
+                    pdf.set_x(curr_l_margin)
 
                     pdf.set_font('Helvetica', 'B', 9)
                     _cell(pdf, eff_width, 5, '  Suggested Fix:')
                     pdf.set_font('Helvetica', '', 9)
-                    pdf.set_x(pdf.l_margin + 4)
-                    pdf.multi_cell(eff_width - 4, 5, fix.strip(), align='L')
+                    pdf.set_left_margin(curr_l_margin + 4)
+                    pdf.multi_cell(eff_width - 4, 5, fix.strip(), align='L', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                    pdf.set_left_margin(curr_l_margin)
+                    pdf.set_x(curr_l_margin)
                     pdf.ln(4)
 
             # ── 3b. AI-Flagged Semantic Risks ─────────────────────────────────
@@ -214,14 +219,19 @@ def generate_full_pdf_report(reports_dir: str = "reports", output_filename: str 
                     pdf.set_font('Helvetica', 'B', 9)
                     _cell(pdf, eff_width, 5, '  AI Reasoning:')
                     pdf.set_font('Helvetica', '', 9)
-                    pdf.set_x(pdf.l_margin + 4)
-                    pdf.multi_cell(eff_width - 4, 5, expl.strip(), align='L')
+                    curr_l_margin = pdf.l_margin
+                    pdf.set_left_margin(curr_l_margin + 4)
+                    pdf.multi_cell(eff_width - 4, 5, expl.strip(), align='L', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                    pdf.set_left_margin(curr_l_margin)
+                    pdf.set_x(curr_l_margin)
 
                     pdf.set_font('Helvetica', 'B', 9)
                     _cell(pdf, eff_width, 5, '  Suggested Fix:')
                     pdf.set_font('Helvetica', '', 9)
-                    pdf.set_x(pdf.l_margin + 4)
-                    pdf.multi_cell(eff_width - 4, 5, fix.strip(), align='L')
+                    pdf.set_left_margin(curr_l_margin + 4)
+                    pdf.multi_cell(eff_width - 4, 5, fix.strip(), align='L', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                    pdf.set_left_margin(curr_l_margin)
+                    pdf.set_x(curr_l_margin)
                     pdf.ln(4)
 
             pdf.ln(5)

@@ -1,18 +1,12 @@
-# SESA - Final Training on 241 Samples
-
-!pip install pandas scikit-learn joblib xgboost lightgbm matplotlib seaborn -q
-
-from google.colab import files
+# ml/model.py
+import os
+import joblib
 import pandas as pd
-import io
 
-print("Upload latest features.csv (241 rows)")
-uploaded = files.upload()
-df = pd.read_csv(io.BytesIO(uploaded[list(uploaded.keys())[0]]))
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "model.pkl")
 
-print(f"✅ Loaded {len(df)} samples | Vulnerable: {df['label'].sum()} | Safe: {len(df)-df['label'].sum()}")
-
-feature_cols = [
+# We must ensure the features are ordered exactly as they were during training
+FEATURE_COLS = [
     "num_functions", "num_external_calls", "calls_before_state_update",
     "num_state_vars", "has_tx_origin", "has_selfdestruct", "avg_function_size",
     "num_payable_functions", "num_modifiers", "num_state_writes",
@@ -22,47 +16,40 @@ feature_cols = [
     "has_reentrancy_guard_pattern", "num_user_controlled_inputs_to_state"
 ]
 
-X = df[feature_cols].fillna(0)
-y = df["label"]
+_model = None
 
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBClassifier
-from lightgbm import LGBMClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score, classification_report
-import joblib
+def load_model():
+    global _model
+    if _model is None:
+        if not os.path.exists(MODEL_PATH):
+            raise FileNotFoundError(f"Model not found at {MODEL_PATH}")
+        _model = joblib.load(MODEL_PATH)
+    return _model
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
-
-results = []
-
-print("\n=== Training Multiple Models ===")
-
-# Random Forest
-rf = RandomForestClassifier(n_estimators=500, max_depth=12, class_weight='balanced', random_state=42, n_jobs=-1)
-rf.fit(X_train, y_train)
-pred = rf.predict(X_test)
-results.append(["RandomForest", round(accuracy_score(y_test, pred), 4), round(f1_score(y_test, pred), 4)])
-
-# XGBoost
-xgb = XGBClassifier(n_estimators=400, max_depth=7, learning_rate=0.08, scale_pos_weight=143/98, random_state=42)
-xgb.fit(X_train, y_train)
-pred = xgb.predict(X_test)
-results.append(["XGBoost", round(accuracy_score(y_test, pred), 4), round(f1_score(y_test, pred), 4)])
-
-# LightGBM
-lgb = LGBMClassifier(n_estimators=400, max_depth=8, learning_rate=0.1, class_weight='balanced', random_state=42, verbose=-1)
-lgb.fit(X_train, y_train)
-pred = lgb.predict(X_test)
-results.append(["LightGBM", round(accuracy_score(y_test, pred), 4), round(f1_score(y_test, pred), 4)])
-
-# Comparison
-comparison = pd.DataFrame(results, columns=["Model", "Accuracy", "F1-Score"])
-print(comparison.sort_values(by="F1-Score", ascending=False))
-
-# Save Best Model (usually RandomForest)
-joblib.dump(rf, 'model.pkl')
-files.download('model.pkl')
-
-print("\n✅ Best model downloaded as model.pkl")
+def predict(features_dict):
+    """
+    Predicts vulnerability for a given dictionary of features.
+    Returns: (prediction_label, confidence)
+    """
+    model = load_model()
+    
+    # Build dataframe for prediction in correct order
+    row = {}
+    for col in FEATURE_COLS:
+        row[col] = features_dict.get(col, 0)
+        
+    df = pd.DataFrame([row], columns=FEATURE_COLS)
+    
+    # Get probability of class 1 (Vulnerable)
+    probs = model.predict_proba(df)[0]
+    
+    # If the model only has one class or something weird happens
+    if len(probs) > 1:
+        confidence = probs[1]
+    else:
+        confidence = float(model.predict(df)[0])
+    
+    # Prediction label
+    prediction = 1 if confidence > 0.5 else 0
+    
+    return prediction, confidence
